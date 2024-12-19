@@ -7,12 +7,25 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		8BB219E72D13FB9800529D78 /* challenge4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = challenge4.app; path = "/Users/wajdwael/Desktop/challenge4/build/Debug-iphoneos/challenge4.app"; sourceTree = "<absolute>"; };
+		8BB21A4B2D14839A00529D78 /* challenge4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = challenge4.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8BB21A3C2D144B1A00529D78 /* Exceptions for "challenge4" folder in "challenge4" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8BB219E62D13FB9800529D78 /* challenge4 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8BB219E92D13FB9800529D78 /* challenge4 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8BB21A3C2D144B1A00529D78 /* Exceptions for "challenge4" folder in "challenge4" target */,
+			);
 			path = challenge4;
 			sourceTree = "<group>";
 		};
@@ -33,6 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				8BB219E92D13FB9800529D78 /* challenge4 */,
+				8BB21A4B2D14839A00529D78 /* challenge4.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,7 +72,7 @@
 			packageProductDependencies = (
 			);
 			productName = challenge4;
-			productReference = 8BB219E72D13FB9800529D78 /* challenge4.app */;
+			productReference = 8BB21A4B2D14839A00529D78 /* challenge4.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -77,11 +91,12 @@
 				};
 			};
 			buildConfigurationList = 8BB219E22D13FB9800529D78 /* Build configuration list for PBXProject "challenge4" */;
-			developmentRegion = en;
+			developmentRegion = ar;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ar,
 			);
 			mainGroup = 8BB219DE2D13FB9800529D78;
 			minimizedProjectReferenceProxies = 1;
@@ -246,6 +261,8 @@
 				DEVELOPMENT_TEAM = F3FXMY5BHX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = challenge4/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Baraem Al-Lugha";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -275,6 +292,8 @@
 				DEVELOPMENT_TEAM = F3FXMY5BHX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = challenge4/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Baraem Al-Lugha";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

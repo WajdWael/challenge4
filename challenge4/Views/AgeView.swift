@@ -1,43 +1,49 @@
 import SwiftUI
+import SwiftData
 
-struct AgeSelectionView: View {
+struct AgeView: View {
     @State private var selectedAge: Int?  // Holds the selected age
-    @State private var isHomePresented = false  // To trigger navigation
+    @State private var childModel: ChildModel?  // To store the selected child's data
+    @State private var navigateToNextScreen = false  // Flag to trigger navigation
 
-    let ages = [8, 7, 6, 5]  // Available age options
+    let ages = [8, 7, 6, 5]
 
     var body: some View {
         NavigationStack {
             VStack {
-                // Title
                 Text("اختر عمرك")
-                    .font(.system(size: 50, weight: .bold))
-                    .foregroundColor(.black)
-                    .padding(.top, 30)
-                
-                Spacer()  // Pushes content to center
-
-                // Balloons with Numbers in Center
+                    .globalFont(size: 150)
+                    .padding(.top, 100)
+                Spacer()
                 HStack(spacing: 40) {
                     ForEach(ages, id: \.self) { age in
                         BalloonView(number: age, isSelected: selectedAge == age)
                             .onTapGesture {
                                 selectedAge = age
-                                isHomePresented = true  // Trigger navigation
+                                updateChildModel(for: age)
+                                navigateToNextScreen = true
                             }
                     }
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
 
-                Spacer()  // Pushes content to center
+                Spacer()
             }
-            .background(Color(red: 255/255, green: 249/255, blue: 219/255))
+            .background(Color("PrimaryColor"))
             .edgesIgnoringSafeArea(.all)
-            .navigationDestination(isPresented: $isHomePresented) {
+            .navigationDestination(isPresented: $navigateToNextScreen) {
                 HomeView()
             }
         }
+    }
+
+    // Function to update the ChildModel based on selected age
+    private func updateChildModel(for age: Int) {
+        let name = "Child"
+        let letters = [LetterModelMain]()
+        let progress = 0.0
+        childModel = ChildModel(name: name, age: age, letters: letters, progress: progress)
     }
 }
 
@@ -56,10 +62,10 @@ struct BalloonView: View {
                         .font(.system(size: 40, weight: .bold))
                         .foregroundColor(.white)
                 )
-                .scaleEffect(isSelected ? 2.6 : 1.8)  // Highlight selection
+                .scaleEffect(isSelected ? 2.6 : 1.8)
                 .animation(.spring(), value: isSelected)
 
-            // Balloon String
+
             Path { path in
                 path.move(to: CGPoint(x: 80, y: 0))
                 path.addQuadCurve(to: CGPoint(x: 50, y: 80), control: CGPoint(x: 30, y:30 ))
@@ -80,7 +86,7 @@ struct BalloonView: View {
     }
 }
 
-
+// Preview
 #Preview {
-    AgeSelectionView()
+    AgeView()
 }
