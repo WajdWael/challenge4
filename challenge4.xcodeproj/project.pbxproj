@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		8BB219E72D13FB9800529D78 /* challenge4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = challenge4.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8BB219E72D13FB9800529D78 /* challenge4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = challenge4.app; path = "/Users/wajdwael/Desktop/challenge4/build/Debug-iphoneos/challenge4.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				8BB219E92D13FB9800529D78 /* challenge4 */,
-				8BB219E82D13FB9800529D78 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		8BB219E82D13FB9800529D78 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8BB219E72D13FB9800529D78 /* challenge4.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +86,7 @@
 			mainGroup = 8BB219DE2D13FB9800529D78;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 8BB219E82D13FB9800529D78 /* Products */;
+			productRefGroup = 8BB219DE2D13FB9800529D78;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
