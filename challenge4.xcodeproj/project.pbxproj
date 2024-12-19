@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		8BB219E72D13FB9800529D78 /* challenge4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = challenge4.app; path = "/Users/wajdwael/Desktop/challenge4/build/Debug-iphoneos/challenge4.app"; sourceTree = "<absolute>"; };
+		61C1D4442D143B1500F1FE4F /* challenge4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = challenge4.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				8BB219E92D13FB9800529D78 /* challenge4 */,
+				61C1D4442D143B1500F1FE4F /* challenge4.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,7 +59,7 @@
 			packageProductDependencies = (
 			);
 			productName = challenge4;
-			productReference = 8BB219E72D13FB9800529D78 /* challenge4.app */;
+			productReference = 61C1D4442D143B1500F1FE4F /* challenge4.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

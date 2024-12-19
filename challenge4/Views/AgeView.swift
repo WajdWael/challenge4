@@ -1,8 +1,8 @@
 import SwiftUI
 
+
 struct AgeSelectionView: View {
     @State private var selectedAge: Int?  // Holds the selected age
-    @State private var isHomePresented = false  // To trigger navigation
 
     let ages = [8, 7, 6, 5]  // Available age options
 
@@ -20,11 +20,16 @@ struct AgeSelectionView: View {
                 // Balloons with Numbers in Center
                 HStack(spacing: 40) {
                     ForEach(ages, id: \.self) { age in
-                        BalloonView(number: age, isSelected: selectedAge == age)
-                            .onTapGesture {
-                                selectedAge = age
-                                isHomePresented = true  // Trigger navigation
-                            }
+                        NavigationLink(
+                            destination: HomeView(),
+                            tag: age,
+                            selection: $selectedAge
+                        ) {
+                            BalloonView(number: age, isSelected: selectedAge == age)
+                                .onTapGesture {
+                                    selectedAge = age  // Set the selected age
+                                }
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -34,9 +39,6 @@ struct AgeSelectionView: View {
             }
             .background(Color(red: 255/255, green: 249/255, blue: 219/255))
             .edgesIgnoringSafeArea(.all)
-            .navigationDestination(isPresented: $isHomePresented) {
-                HomeView()
-            }
         }
     }
 }
