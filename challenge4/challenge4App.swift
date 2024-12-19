@@ -11,7 +11,7 @@ import SwiftUI
 struct challenge4App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AgeSelectionView()
                 .font(Font.custom("Magroo-Regular", size: 18))
         }
         

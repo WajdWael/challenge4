@@ -65,30 +65,30 @@ struct PyramidView: View {
 
     var body: some View {
         
-        
-        ZStack {
-            Color("InterfacesColor")
-            
-            VStack(spacing: 90) {
-                // Progress Bar
-                ProgressBarView(currentLevel: isLevelOne ? 1 : 2)
+        NavigationStack{
+            ZStack {
+                Color("InterfacesColor")
                 
-                HStack{
-                    // Pyramid Images
-                     VStack(spacing: -10) {
-                        ForEach(0..<pyramidParts.count, id: \.self) { index in
-                        // Show only the image in the second view
-                         PyramidPartView(part: pyramidParts[index], isLevelOne: false)
-                       }
-           }
+                VStack(spacing: 90) {
+                    // Progress Bar
+                    ProgressBarView(currentLevel: isLevelOne ? 1 : 2)
                     
-                    
+                    HStack{
+                        // Pyramid Images
+                        VStack(spacing: -10) {
+                            ForEach(0..<pyramidParts.count, id: \.self) { index in
+                                // Show only the image in the second view
+                                PyramidPartView(part: pyramidParts[index], isLevelOne: false)
+                            }
+                        }
+                        
+                        
                         
                         ZStack{
                             Spacer()
                             Rectangle().fill(Color("OrangeBox")).frame(width: 140, height: 400).cornerRadius(20)
-                                                
-                                                
+                            
+                            
                             VStack(spacing:8){
                                 ForEach(Array(stickyNotes.enumerated()), id: \.offset) { index, text in
                                     Text(text)
@@ -96,7 +96,7 @@ struct PyramidView: View {
                                         .frame(width: 100, height: 80)
                                         .background(Color("DragBoxColor"))
                                         .cornerRadius(8)
-                                        //.shadow(radius: 3)
+                                    //.shadow(radius: 3)
                                         .offset(positions[index])
                                         .gesture(
                                             DragGesture()
@@ -110,24 +110,25 @@ struct PyramidView: View {
                                 }
                             }
                         }
-                    
                         
                         
+                        
+                        
+                        
+                    }
                     
                     
-                }
-                
-                
-                // Navigation to the next view
-                NavigationLink(destination: PyramidView(pyramidParts: pyramidParts, isLevelOne: !isLevelOne)) {
-                    Image(systemName: "arrow.backward.circle")
-                        .resizable()
-                        .foregroundStyle(Color.orange)
-                        .frame(width: 78, height: 78)
+                    // Navigation to the next view
+                    NavigationLink(destination: SandDrawingView()) {
+                        Image(systemName: "arrow.backward.circle")
+                            .resizable()
+                            .foregroundStyle(Color.orange)
+                            .frame(width: 78, height: 78)
+                    }
                 }
             }
+            .navigationBarBackButtonHidden(true)
         }
-        .navigationBarBackButtonHidden(true)
     }
     
     
