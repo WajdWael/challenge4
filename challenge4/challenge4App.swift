@@ -12,6 +12,8 @@ struct challenge4App: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .font(Font.custom("Magroo-Regular", size: 18))
         }
+        
     }
 }
