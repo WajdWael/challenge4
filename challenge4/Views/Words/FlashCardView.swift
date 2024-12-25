@@ -11,60 +11,71 @@
 //  Created by Wajd Wael on 18/06/1446 AH.
 //
 
-import SwiftUI
 import SwiftData
-
+import SwiftUI
 
 struct FlashCardView: View {
-    @State private var isFlipped = false
-    @State private var isLevelOne = true
-    @State private var flashcards = [
-        FlashCard(textBackgroundColor:"أرنب", imageBackgroundColor: "Pink" ,textColor:"black" ,text:"white")
-    ]
- 
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                Color("PrimaryColor").ignoresSafeArea(.all)
-                
-                VStack(spacing:90) {
-                    
-                    ProgressBarView(currentLevel: isLevelOne ? 1 : 2)
-                
-                    HStack(spacing:0){
-                        
-                        Image("Rabbit")
-                            .padding()
-                            .frame(width: 330, height: 332)
-                            .background(Color.white)
-                            .cornerRadius(20)
-                            
-                        Text("أرنب")
-                            .globalFont(size: 90)
-                            .font(.largeTitle)
-                            .padding()
-                            .frame(width: 330, height: 332)
-                            .background(Color("FlashCardPink"))
-                            .cornerRadius(20)
-                    }
-                    
-                    
-                    
-                    // Navigation to PyramidPage
-                    NavigationLink(destination: PyramidView()) {
-                        Image(systemName: "arrow.backward.circle")
-                            .resizable()
-                            .foregroundStyle(Color("ProgressBarColor"))
-                            .frame(width: 78, height: 78)
-                    }
-                    .padding(.top, 40)
-                }
-            }
-            .navigationBarHidden(true)
-        }
-    }
-}
+    @Binding var isActivityCompleted: Bool
+    @Binding var completedWords: [Bool]
+    @Binding var completedLetters: [Bool]
+    @ObservedObject var child: Child
 
-#Preview{
-    FlashCardView()
+    var body: some View {
+        let word = words[child.currentWordIndex]
+
+        ZStack {
+            Color("PrimaryColor").edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing:90){
+                HStack{
+                    // Right Side: Text
+                    ZStack {
+                        Color(word.backgroundColor)
+                            .opacity(1.0)
+                            
+                        
+                        Text(word.word)
+                            .foregroundStyle(.white)
+                            .bold()
+                            .globalFont(size: 90)
+                    }
+                    .frame(width: 250, height: 350)
+                    .cornerRadius(10)
+                    .overlay(
+                        Image(systemName: "speaker.wave.2.fill")
+                            .font(.system(size: 25))
+                            .foregroundColor(.white)
+                            .padding(),
+                        alignment: .topTrailing
+                    )
+                    
+                    ZStack {
+                        Image(word.imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .padding()
+                    }
+                    .frame(width: 250, height: 350)
+                    .cornerRadius(10)
+                    .background(.white)
+                    
+                }
+                
+                NavigationLink(destination: PyramidView(
+                    isActivityCompleted: $isActivityCompleted,
+                    completedWords: $completedWords, completedLetters: $completedLetters,
+                    child:child, word:word
+                )) {
+                    Image(systemName: "arrow.forward.circle")
+                        .resizable()
+                        .foregroundStyle(Color.orange)
+                        .frame(width: 78, height: 78)
+                    
+                }
+
+            }
+            
+        }
+        .navigationBarBackButtonHidden(true)
+    }
 }

@@ -4,71 +4,43 @@
 //
 //  Created by Wajd Wael on 18/06/1446 AH.
 //
+
 import SwiftUI
 
 struct PuzzleView: View {
-    @StateObject private var viewModel = PuzzleViewModel()
+    let picsArray = ["pic1", "pic2", "pic3", "pic4", "pic5", "pic6"]
+    @ObservedObject var child: Child
+    @State private var isActivityCompleted = false
+    @Binding var completedLetters: [Bool]
     
     var body: some View {
-        VStack {
-            // Full Puzzle Background Image
-            ZStack {
-                Image(viewModel.backgroundImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .opacity(0.3) // 30% opacity
-                    .frame(width: 965, height: 486)
-                
-                // Puzzle Grid with Tiles
-                VStack(spacing: 2) {
-                    ForEach(0..<viewModel.gridSize.rows, id: \.self) { row in
-                        HStack(spacing: 2) {
-                            ForEach(0..<viewModel.gridSize.columns, id: \.self) { col in
-                                let piece = viewModel.grid[row][col]
-                                ZStack {
-                                    Color.clear
-                                        .frame(width: 324, height: 240)
-                                        .border(Color.black, width: 2)  // Black border
-                                    
-                                    if let piece = piece {
-                                        Image(piece.imageName)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                    }
-                                }
-                                .onTapGesture {
-                                    if let selectedPiece = viewModel.tileList.first {
-                                        viewModel.placeTile(selectedPiece, at: row, col: col)
-                                    }
-                                }
-                            }
+        NavigationStack {
+            VStack {
+                Image("puzzle___")
+                    .opacity(0.3)
+
+                ScrollView(.horizontal) {
+                    HStack{
+                        ForEach(0..<picsArray.count, id: \.self) { index in
+                            Image(picsArray[index])
                         }
                     }
                 }
-            }
-//            .frame(width: 30, height: 300)
-
-            // Scrollable List of Tiles
-            ScrollView(.horizontal) {
-                HStack {
-                    ForEach(viewModel.tileList) { piece in
-                        Image(piece.imageName)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 200, height: 200)
-                            .border(Color.black, width: 1)
-                            .onTapGesture {
-                                // User selects a tile to move
-                                print("Selected \(piece.imageName)")
-                            }
-                    }
+                NavigationLink(destination: ColoringView(image: "A-arabic-Coloring", child:child, completedLetters: $completedLetters)) {
+                    Text("Next")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                 }
             }
-            .padding()
+            .navigationBarBackButtonHidden(true)
+            .globalFont(size: 150)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color("PrimaryColor"))
+            .ignoresSafeArea()
         }
     }
-}
-
-#Preview {
-    PuzzleView()
 }

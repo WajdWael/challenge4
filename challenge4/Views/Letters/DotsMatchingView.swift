@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DotsMatchingView: View {
     var body: some View {
-        Text("Hello, World! DotsMatchingView")
+        Text("Dots Matching View")
     }
 }
 

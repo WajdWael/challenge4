@@ -4,222 +4,246 @@
 //
 //  Created by Wajd Wael on 18/06/1446 AH.
 
+//
+//  Sand.swift
+//  Trying
+//
+//  Created by Alaa Emad Alhamzi on 23/06/1446 AH.
+//
+
 import SwiftUI
-import AVFoundation
 
 // MARK: - Model
-struct SandStroke: Identifiable {
+struct SandDrawPoint: Identifiable {
     let id = UUID()
-    let points: [CGPoint]
-    let isErasing: Bool // Determines if the stroke is for erasing
+    var x: CGFloat
+    var y: CGFloat
+    var isEraser: Bool
 }
 
 // MARK: - ViewModel
-class SandViewM: ObservableObject {
-    @Published var strokes: [SandStroke] = []
-    private var currentStroke: [CGPoint] = []
-    private var sandSoundPlayer: AVAudioPlayer?
-    
-    init() {
-        loadSandSound()
+class SandDrawViewModel: ObservableObject {
+    @Published var points: [SandDrawPoint] = []
+    @Published var isEraser: Bool = false
+
+    func addPoint(_ point: SandDrawPoint) {
+        points.append(point)
     }
-    
-    // Load sand sound effect
-    func loadSandSound() {
-        if let url = Bundle.main.url(forResource: "sand_sound", withExtension: "mp3") {
-            do {
-                sandSoundPlayer = try AVAudioPlayer(contentsOf: url)
-                sandSoundPlayer?.prepareToPlay()
-            } catch {
-                print("Error loading sand sound: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    // Start a new stroke
-    func startStroke(at point: CGPoint, isErasing: Bool) {
-        currentStroke = [point]
-        playSandSound()
-    }
-    
-    // Continue the stroke
-    func continueStroke(to point: CGPoint) {
-        currentStroke.append(point)
-    }
-    
-    // Finish the stroke and save it
-    func endStroke(isErasing: Bool) {
-        if !currentStroke.isEmpty {
-            let newStroke = SandStroke(points: currentStroke, isErasing: isErasing)
-            strokes.append(newStroke)
-            currentStroke = []
-        }
-        stopSandSound()
-    }
-    
-    // Play sand sound
-    private func playSandSound() {
-        sandSoundPlayer?.play()
-    }
-    
-    // Stop sand sound
-    private func stopSandSound() {
-        sandSoundPlayer?.stop()
-    }
-    
-    // Clear all strokes
+
     func clearCanvas() {
-        strokes.removeAll()
+        points.removeAll()
     }
 }
 
+// MARK: - ProgressBarView
+struct progressBarView: View {
+    var currentLevel: Int
 
-// MARK: - SandDrawingView
-struct SandView: View {
-    @StateObject private var viewModel = SandViewM()
-    @State private var isWritingEnabled: Bool = true // Toggle writing mode
-    @State private var isErasingEnabled: Bool = false // Toggle erasing mode
-    @State private var currentLevel: Int = 1 // User's current progress level
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            Rectangle()
+                .fill(Color.gray.opacity(0.4))
+                .frame(width: 400, height: 30)
+                .cornerRadius(55)
+
+            Rectangle()
+                .fill(Color("Bar"))
+                .frame(width: CGFloat(currentLevel) * 75, height: 30)
+                .cornerRadius(55)
+                .animation(.easeInOut, value: currentLevel)
+
+            HStack(spacing: 75) {
+                ForEach(0..<4) { _ in
+                    Image("pumpkin")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 50, height: 55)
+                }
+            }
+            .padding(.horizontal, -15)
+        }
+        .frame(width: 400, alignment: .trailing)
+    }
+}
+
+// MARK: - SandDrawView
+struct SandDrawView: View {
+    @StateObject private var viewModel = SandDrawViewModel()
+    @State private var showPopup = false // State to toggle the pop-up
+    @ObservedObject var child : Child
+    @Binding var completedWords: [Bool]
+    @Binding var completedLetters: [Bool]
+    @State private var navigateToHomePage = false  // Flag to trigger navigation
     
     var body: some View {
         
-        NavigationStack{
-            ZStack {
-                // Background color
-                Color("InterfacesColor")
-                    .edgesIgnoringSafeArea(.all)
-                
-                VStack {
-                    Spacer()
-                    
-                    // Progress bar in the middle
-                    ProgressBarView(currentLevel: currentLevel)
-                        .frame(width: 400, height: 60)
-                    
-                    // Text below the progress bar
-                    Text("ارنب")
-                        .globalFont(size: 70)
-                        .foregroundColor(.black)
-                    
-                    Spacer()
-                    
-                    HStack {
-                        // Buttons next to the sand rectangle
-                        VStack(spacing: 20) {
-                            Button(action: {
-                                isWritingEnabled = true
-                                isErasingEnabled = false
-                            }) {
-                                Image(systemName: "pencil.circle.fill")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                    .foregroundColor(isWritingEnabled ? .orange : .gray)
-                            }
-                            
-                            Button(action: {
-                                isWritingEnabled = false
-                                isErasingEnabled = true
-                            }) {
-                                Image(systemName: "eraser.circle.fill")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                    .foregroundColor(isErasingEnabled ? .orange : .gray)
-                            }
-                        }
-                        .padding(.trailing, 20)
-                        
-                        // Sand Drawing Area
-                        ZStack {
-                            // Sand background
-                            Image("Sand")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 952, height: 476)
-                                .clipped()
-                                .cornerRadius(12)
-                                .shadow(radius: 5)
-                            
-                            // Strokes with 3D effect
-                            ForEach(viewModel.strokes) { stroke in
-                                if stroke.isErasing {
-                                    Path { path in
-                                        guard let firstPoint = stroke.points.first else { return }
-                                        path.move(to: firstPoint)
-                                        stroke.points.forEach { point in
-                                            path.addLine(to: point)
-                                        }
-                                    }
-                                    .stroke(Color("background"), lineWidth: 20)
-                                } else {
-                                    Path { path in
-                                        guard let firstPoint = stroke.points.first else { return }
-                                        path.move(to: firstPoint)
-                                        stroke.points.forEach { point in
-                                            path.addLine(to: point)
-                                        }
-                                    }
-                                    .stroke(Color.black.opacity(0.3), lineWidth: 6)
-                                    .shadow(color: Color.black.opacity(0.5), radius: 2, x: 2, y: 2)
-                                    .blendMode(.multiply)
-                                    
-                                    Path { path in
-                                        guard let firstPoint = stroke.points.first else { return }
-                                        path.move(to: firstPoint)
-                                        stroke.points.forEach { point in
-                                            path.addLine(to: point)
-                                        }
-                                    }
-                                    .stroke(Color.white.opacity(0.6), lineWidth: 3)
-                                    .offset(x: -1, y: -1)
-                                    .blendMode(.overlay)
-                                }
-                            }
-                            
-                            // Gesture area
-                            Rectangle()
-                                .fill(Color.clear)
-                                .frame(width: 952, height: 476)
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            if isErasingEnabled {
-                                                viewModel.startStroke(at: value.location, isErasing: true)
-                                            } else {
-                                                viewModel.startStroke(at: value.location, isErasing: false)
-                                            }
-                                            viewModel.continueStroke(to: value.location)
-                                        }
-                                        .onEnded { _ in
-                                            viewModel.endStroke(isErasing: isErasingEnabled)
-                                        }
-                                )
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    // Checkmark button in the body
-                    NavigationLink{
-                        HomeView()
-                            .navigationBarBackButtonHidden(true)
-                    }label:{
-                        Image(systemName: "checkmark.circle")
-                            .resizable()
-                            .foregroundStyle(Color.orange)
-                            .frame(width: 78, height: 78)
-                            .padding()
-                    }
-                    
-//
+        let word = words[child.currentWordIndex]
+        
+        VStack(spacing: 8) {
+            HStack {
+                // Undo/Delete Button in Circle (on the left)
+                Button(action: {
+                }) {
+                    Image(systemName: "house.circle")
+                        .resizable()
+                        .foregroundStyle(Color.orange)
+                        .frame(width: 78, height: 78)
+                }
+                Spacer()
+                Button(action: {
+                    viewModel.clearCanvas()
+                }) {
+                    Image(systemName: "trash.circle")
+                        .resizable()
+                        .foregroundStyle(Color.orange)
+                        .frame(width: 78, height: 78)
                 }
             }
-            .navigationBarBackButtonHidden(true)
+            .padding()
+
+            // Text below the progress bar
+            Text(word.word)
+                .fontWeight(.bold)
+                .foregroundColor(.black)
+                .globalFont(size: 60)
+
+            // Drawing Rectangle with background image "sand_texture"
+            ZStack {
+                Image("Sand")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 952, height: 476)
+                    .cornerRadius(15)
+                    .shadow(radius: 5)
+
+                Canvas { context, size in
+                    for point in viewModel.points {
+                        let baseColor = point.isEraser ? Color("background") : Color(red: 0.76, green: 0.58, blue: 0.37)
+                        
+                        let shadowColor = Color.black.opacity(0.7)
+                        let shadowOffset = CGSize(width: 2, height: 2)
+                        let shadowRect = CGRect(x: point.x - 6 + shadowOffset.width, y: point.y - 6 + shadowOffset.height, width: 14, height: 14)
+                        context.fill(Path(ellipseIn: shadowRect), with: .color(shadowColor))
+
+                        let rect = CGRect(x: point.x - 6, y: point.y - 6, width: 14, height: 14)
+                        context.fill(Path(ellipseIn: rect), with: .color(baseColor))
+                    }
+                }
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            let newPoint = SandDrawPoint(
+                                x: value.location.x,
+                                y: value.location.y,
+                                isEraser: viewModel.isEraser
+                            )
+                            viewModel.addPoint(newPoint)
+                        }
+                )
+            }
+            .frame(width: 952, height: 476)
+
+            // Check mark button under the drawing rectangle
+            Button(action: {
+                showPopup = true // Show the pop-up
+            }) {
+                Image(systemName: "checkmark.circle")
+                    .resizable()
+                    .foregroundStyle(Color.orange)
+                    .frame(width: 78, height: 78)
+            }
+            .padding(.top, 20)
         }
+        
+        .background(Color("PrimaryColor").edgesIgnoringSafeArea(.all))
+        .edgesIgnoringSafeArea(.all)
+
+        // Pop-up implementation
+        .overlay(
+            Group {
+                if showPopup {
+                    ZStack {
+                        // Background overlay
+                        Color.black.opacity(0.4)
+                            .edgesIgnoringSafeArea(.all)
+
+                        // Pop-up rectangle
+                        VStack(spacing: 10){
+                            
+                            //ProgressBarView(child: child)
+                            
+                            Text("مبروك 🎉 ")
+                                .globalFont(size: 60)
+                                .bold()
+                                .foregroundStyle(Color(.black))
+                            
+                            Text("لقد تم إنهاء كلمة (\(word.word))")
+                                .globalFont(size: 40)
+                            
+                           Image("SingleCharacter")
+                                .resizable()
+                                .scaledToFit()
+                                .scaleEffect(0.75)
+
+                            Button(action: {
+                                completedWords[child.currentWordIndex] = true
+                                   markWordAsCompleted()
+                                   navigateToHomePage = true
+                            }) {
+//                                Text("الصفحة الرئيسية")
+//                                    .font(.title2)
+//                                    .foregroundStyle(Color(.black))
+//                                    .frame(width: 200, height: 70)
+//                                    .background(Color("StichyNotes Rectangle"))
+//                                    .cornerRadius(20)
+                                
+//                                Image(systemName: "house.circle")
+//                                    .resizable()
+//                                    .foregroundStyle(Color.orange)
+//                                    .frame(width: 78, height: 78)
+                                
+                                Text("انهاء")
+                                    .globalFont(size: 30)
+                                    .fontWeight(.bold)
+                                    .padding()
+                                    .background(Color.orange)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10)
+                            }
+                            .background(
+                                NavigationLink(
+                                    destination: HomeViewWords(child: child,  completedWords: $completedWords, completedLetters:$completedLetters),
+                                    isActive: $navigateToHomePage,
+                                    label: { EmptyView() }
+                                )
+                            ).navigationBarBackButtonHidden(true)
+                        }.padding()
+                        .frame(width: 644, height: 594)
+                        .background(Color("PrimaryColor"))
+                        .cornerRadius(15)
+                        .shadow(radius: 10)
+                    }
+                }
+            }
+        )
+        
+        .navigationBarBackButtonHidden(true)
     }
+    
+    func markWordAsCompleted() {
+        
+        var word  = words[child.currentWordIndex]
+        
+        word.isCompleted = true
+        
+        
+            
+            if   child.currentWordIndex < words.count - 1  {
+                
+                child.currentWordIndex += 1
+            }else{
+                child.currentWordIndex = 0
+            }
+        
+        }
 }
-
-// MARK: - Preview
-#Preview {
-    SandView()
-}
-
