@@ -11,7 +11,7 @@ import SwiftData
 
 //Words Data
 var words: [Word] = [
-    Word(word: "أرنب", imageName: "Rabbit", backgroundColor: "Pink", isCompleted: false),
-    Word(word: "حصان", imageName: "Horse", backgroundColor: "Brown", isCompleted: false),
-    Word(word: "بيت", imageName: "Home", backgroundColor: "Yellow", isCompleted: false)
+    Word(word: "أرنب", imageName: "Rabbit", backgroundColor: "Pink",isCompleted: false),
+    Word(word: "حصان", imageName: "Horse", backgroundColor: "Brown" ,isCompleted: false),
+    Word(word: "بيت", imageName: "Home", backgroundColor: "Yellow",isCompleted: false)
 ]

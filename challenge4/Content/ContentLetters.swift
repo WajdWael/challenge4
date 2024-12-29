@@ -25,7 +25,7 @@ var letters: [Letter] = [
     ),
     Letter(
         letter: "ب ت ث",
-        coloringCanvas: "A-arabic-Coloring",
+        coloringCanvas: "2",
         puzzleArray: [
             "picA1",
             "picA2",
@@ -34,21 +34,21 @@ var letters: [Letter] = [
             "picA5",
             "picA6"
         ],
-        videoTutorial: "yaa__letter",
+        videoTutorial: "first_group_letters",
         isCompleted: false
     ),
-    Letter(
-        letter: "ي",
-        coloringCanvas: "A-arabic-Coloring",
-        puzzleArray: [
-            "picY1",
-            "picY2",
-            "picY3",
-            "picY4",
-            "picY5",
-            "picY6"
-        ],
-        videoTutorial: "alefletter",
-        isCompleted: false
-    ),
+//    Letter(
+//        letter: "ي",
+//        coloringCanvas: "A-arabic-Coloring",
+//        puzzleArray: [
+//            "picY1",
+//            "picY2",
+//            "picY3",
+//            "picY4",
+//            "picY5",
+//            "picY6"
+//        ],
+//        videoTutorial: "alefletter",
+//        isCompleted: false
+//    ),
 ]

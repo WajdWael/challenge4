@@ -13,6 +13,7 @@
 
 import SwiftData
 import SwiftUI
+import AVFoundation
 
 struct FlashCardView: View {
     @Binding var isActivityCompleted: Bool

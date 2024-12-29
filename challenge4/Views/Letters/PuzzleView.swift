@@ -26,7 +26,7 @@ struct PuzzleView: View {
                         }
                     }
                 }
-                NavigationLink(destination: ColoringView(image: "A-arabic-Coloring", child:child, completedLetters: $completedLetters)) {
+                NavigationLink(destination: ColoringView(child:child, completedLetters: $completedLetters)) {
                     Text("Next")
                         .font(.title)
                         .fontWeight(.bold)

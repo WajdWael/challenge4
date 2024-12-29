@@ -10,7 +10,8 @@ import SwiftUI
 struct HomeViewLetters: View {
     @ObservedObject var child: Child
     @State private var isActivityCompleted = false
-    @Binding  var completedLetters: [Bool]    
+    @Binding  var completedLetters: [Bool]
+    
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
@@ -26,7 +27,7 @@ struct HomeViewLetters: View {
                         NavigationLink(destination: TutorialView(completedLetters: $completedLetters, child: child)) {
                             Image("Brown_home")
                         }.position(x: geometry.size.width * 0.3, y: geometry.size.height * 0.7)
-                            .scaleEffect(0.75)
+                            .scaleEffect(1)
                         
                         Image("WordsHouseLocked")
                             .position(x: geometry.size.width * 0.85, y: geometry.size.height * -0.18)

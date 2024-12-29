@@ -6,110 +6,92 @@
 //
 
 import SwiftUI
+struct Line {
+    var points: [CGPoint] = [] // Default empty array for points
+    var color: Color = .red    // Default color
+    var lineWidth: CGFloat = 2.0  // Default line width
 
-struct ColoringView: View {
-    let image: String // The name of the image
-    @State private var points: [CGPoint] = [] // To store the drawing points
-    @State private var currentPoint: CGPoint? // Current point while drawing
-    @State private var brushColor: Color = .red // Brush color
-    
-    @ObservedObject var child: Child
-    @State private var isActivityCompleted = false
-    @Binding var completedLetters: [Bool]
-    
-    var body: some View {
-        ZStack {
-            // The background image
-            Image(image)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 300, height: 300) // You can adjust the size
-                .overlay(
-                    GeometryReader { geometry in
-                        // Drawing layer
-                        Path { path in
-                            // Draw all stored points
-                            for point in points {
-                                path.addEllipse(in: CGRect(x: point.x, y: point.y, width: 10, height: 10)) // Brush size is 10
-                            }
-                        }
-                        .stroke(brushColor, lineWidth: 10) // Brush stroke color and size
-                        .background(Color.clear) // Ensure the background is clear for drawing
-                        .gesture(
-                            DragGesture(minimumDistance: 0) // Gesture to track touch
-                                .onChanged { value in
-                                    // Add the current touch point to the points array
-                                    points.append(value.location)
-                                }
-                        )
-                    }
-                )
-        }
-        .padding()
-        .gesture(
-            DragGesture(minimumDistance: 0) // Optional: Detecting drag
-                .onChanged { value in
-                    currentPoint = value.location
-                }
-        )
+    init(points: [CGPoint] = [], color: Color = .red, lineWidth: CGFloat = 2.0) {
+        self.points = points
+        self.color = color
+        self.lineWidth = lineWidth
     }
 }
 
-//struct ColoringView: View {
-//    let picsArray = [
-//        "Black",
-//        "Brown",
-//        "DarkBlue",
-//        "DarkOrange",
-//        "DarkPink",
-//        "DarkPurple",
-//        "DarkYellow",
-//        "Green-1",
-//        "Green",
-//        "Light",
-//        "LightBlue2",
-//        "LightGreen-1",
-//        "LightGreen",
-//        "LightOrange",
-//        "LightPink",
-//        "LightPurple-1",
-//        "LightPurple",
-//        "LightYellow",
-//        "Pink-1",
-//        "Pink",
-//        "Red",
-//    ]
-//    @ObservedObject var child: Child
-//    @State private var isActivityCompleted = false
-//    @Binding  var completedLetters: [Bool]
-//
-//    
-////    var body: some View {
-////        NavigationStack {
-////            Image("A-arabic-Coloring")
-////            
-////            ScrollView(.horizontal) {
-////                HStack{
-////                    ForEach(0..<picsArray.count, id: \.self) { index in
-////                        Image(picsArray[index])
-////                    }
-////                }
-////            }
-////            NavigationLink(destination: HomeViewLetters(child: child, completedLetters: $completedLetters)) {
-////                Text("Next")
-////                    .font(.title)
-////                    .fontWeight(.bold)
-////                    .padding()
-////                    .background(Color.blue)
-////                    .foregroundColor(.white)
-////                    .cornerRadius(10)
-////            }
-////        }
-////        .ignoresSafeArea()
-////        .navigationBarBackButtonHidden(true)
-////        .globalFont(size: 150)
-////        .frame(maxWidth: .infinity, maxHeight: .infinity)
-////        .background(Color("PrimaryColor"))
-////    }
-//}
-//      
+struct ColoringView: View {
+    @ObservedObject var child: Child
+    @State private var isActivityCompleted = false
+    @Binding var completedLetters: [Bool]
+
+    @State private var currentLine = Line() // Initialize Line struct here
+    @State private var lines: [Line] = []
+
+    @State private var selectedColor: Color = .clear // Initialize with a clear color
+
+    var body: some View {
+        let letter = letters[child.currentWordIndex]
+        let imageName = letter.coloringCanvas // Assuming coloringCanvas is the image name
+
+        GeometryReader { geometry in
+            VStack {
+                // Top buttons (adjusted for iPad layout)
+                HStack {
+                    // Home button
+                    NavigationLink(destination: HomeViewLetters(child: child, completedLetters: $completedLetters)) {
+                        
+                        Image(systemName: "house.circle")
+                            .resizable()
+                            .foregroundStyle(Color.orange)
+                            .frame(width: 48, height: 48)
+                    }
+
+                    Spacer()
+
+                    // Forward button
+                    NavigationLink(destination: HomeViewLetters(child: child, completedLetters: $completedLetters)) {
+                        Image(systemName: "arrow.forward.circle")
+                            .resizable()
+                            .foregroundStyle(Color.orange)
+                            .frame(width: 48, height: 48)
+                    }
+                }
+                .padding(.top, 10) // Add a small top padding for spacing
+
+                // Image and Canvas (filling available space)
+                ZStack {
+                    // Correctly load and display the image as background
+                    Image(imageName) // Use the image name here
+                        .resizable()
+                        .scaledToFit() // Adjust the image to fit within the view
+                        .frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.5) // Adjust the size based on available space
+
+                    // Canvas overlay for drawing
+                    Canvas { context, size in
+                        for line in lines {
+                            var path = Path()
+                            path.addLines(line.points)
+                            context.stroke(path, with: .color(line.color), lineWidth: line.lineWidth)
+                        }
+                    }
+                    .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                        .onChanged { value in
+                            let newPoint = value.location
+                            currentLine.points.append(newPoint)
+                            currentLine.color = selectedColor // Use the selected color
+                            lines.append(currentLine)
+                        }
+                        .onEnded { _ in
+                            currentLine = Line(points: [], color: selectedColor) // Keep color after drawing
+                        })
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                // Color Picker (positioned below the canvas)
+                ColorPickerView(selectedColor: $selectedColor)
+                    .padding(.top, 5) // Small top padding
+            }
+            .navigationBarBackButtonHidden(true)
+            .background(Color("PrimaryColor")) // Set the background color
+        }
+    }
+}
