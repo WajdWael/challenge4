@@ -190,18 +190,6 @@ struct SandDrawView: View {
                                    markWordAsCompleted()
                                    navigateToHomePage = true
                             }) {
-//                                Text("الصفحة الرئيسية")
-//                                    .font(.title2)
-//                                    .foregroundStyle(Color(.black))
-//                                    .frame(width: 200, height: 70)
-//                                    .background(Color("StichyNotes Rectangle"))
-//                                    .cornerRadius(20)
-                                
-//                                Image(systemName: "house.circle")
-//                                    .resizable()
-//                                    .foregroundStyle(Color.orange)
-//                                    .frame(width: 78, height: 78)
-                                
                                 Text("انهاء")
                                     .globalFont(size: 30)
                                     .fontWeight(.bold)
