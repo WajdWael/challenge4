@@ -12,6 +12,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 // MARK: - Model
 struct SandDrawPoint: Identifiable {
@@ -74,6 +75,7 @@ struct SandDrawView: View {
     @Binding var completedWords: [Bool]
     @Binding var completedLetters: [Bool]
     @State private var navigateToHomePage = false  // Flag to trigger navigation
+    @State private var audioPlayer: AVAudioPlayer?
     
     var body: some View {
         
@@ -153,6 +155,10 @@ struct SandDrawView: View {
                     .frame(width: 78, height: 78)
             }
             .padding(.top, 20)
+            
+        }.onAppear{
+            
+            playSound(for: "جرب كتابة الكلمة على الرمل")
         }
         
         .background(Color("PrimaryColor").edgesIgnoringSafeArea(.all))
@@ -222,6 +228,9 @@ struct SandDrawView: View {
                         .background(Color("PrimaryColor"))
                         .cornerRadius(15)
                         .shadow(radius: 10)
+                        .onAppear{
+                            playSound(for: "Clapping")
+                        }
                     }
                 }
             }
@@ -246,4 +255,18 @@ struct SandDrawView: View {
             }
         
         }
+    
+    func playSound(for part: String) {
+        // اسم الملف الصوتي يجب أن يتطابق مع النص (part)
+        if let soundURL = Bundle.main.url(forResource: part, withExtension: "mp3") {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
+                audioPlayer?.play()
+            } catch {
+                print("Error playing sound for \(part): \(error.localizedDescription)")
+            }
+        } else {
+            print("Sound file for \(part) not found.")
+        }
+    }
 }
