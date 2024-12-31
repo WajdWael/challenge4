@@ -7,12 +7,11 @@
 
 import Foundation
 
-
 struct Letter: Identifiable {
     let id = UUID()
     let letter: String
     let coloringCanvas: String
-    let puzzleArray: [String]
+    let puzzleImage: String
     let videoTutorial: String
     var isCompleted: Bool
 }

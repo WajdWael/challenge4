@@ -15,11 +15,11 @@ struct TutorialView: View {
     @Binding  var completedLetters: [Bool]
     @ObservedObject var child: Child
     @State private var isActivityCompleted = false
-    
-    private var player: AVPlayer? {
-        let letter = letters[child.currentWordIndex]
 
-        guard let url = Bundle.main.url(forResource: letter.videoTutorial, withExtension: "mp4") else {
+    private var player: AVPlayer? {
+        let letterData = letters[child.currentLetterIndex]
+
+        guard let url = Bundle.main.url(forResource: letterData.videoTutorial, withExtension: "mp4") else {
             print("Error: Video file not found!")
             return nil
         }
@@ -29,58 +29,80 @@ struct TutorialView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack(alignment: .topLeading) {
-                VStack {
-                    NavigationLink(destination: HomeViewLetters(
-                        child: child, completedLetters: $completedLetters
-                    )) {
-                        Image(systemName: "house.circle")
-                            .resizable()
-                            .foregroundStyle(Color.orange)
-                            .frame(width: 78, height: 78)
-                    }
-                    .padding(.top)  // Adjust the top padding as needed
-                    .padding(.leading)  // Adjust the left padding as needed
-                }
-            }
-            ZStack {
-                // Video Player
-                if let player = player {
-                    VideoPlayer(player: player)
-                        .frame(width: 600, height: 400)  // Add custom width and height for the frame
-                        .background(Color("PrimaryColor"))
-                        .cornerRadius(10)  // Optional: Add rounded corners
-                        .border(Color.gray, width: 2)  // Optional: Add border around the video
-                        .onAppear {
-                            player.play()
-                        }
-                        .onDisappear {
-                            player.pause()  // Pause video when leaving the view
-                        }
-                } else {
-                    Text("Error: Video not found!")
-                        .font(.title)
-                        .foregroundColor(.red)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-            }
+        let letterData = letters[child.currentWordIndex]
 
+        NavigationStack {
+        ZStack {
+            Color("PrimaryColor").ignoresSafeArea()
             VStack {
-                NavigationLink(destination: ColoringView(
-                    child: child, completedLetters: $completedLetters
-                )) {
-                    Image(systemName: "arrow.forward.circle")
-                        .resizable()
-                        .foregroundStyle(Color.orange)
-                        .frame(width: 78, height: 78)
+                // Home Button
+                HStack{
+                    NavigationLink(destination: HomeViewLetters(child: child, completedLetters: $completedLetters)) {
+                        Image(systemName: "house.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 81, height: 81)
+                            .background(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                            )
+                    }
+                    Spacer()
+                    
+                    Text("شاهد المقطع، تعلم حرف \(letters[child.currentLetterIndex].letter)")
+                        .globalFont(size: 80)
+                    Spacer()
+                }.padding()
+                
+                // View content
+                ZStack {
+                    if let player = player {
+                        VideoPlayer(player: player)
+                            .frame(width: 860, height: 484)
+                            .background(Color("PrimaryColor"))
+                            .cornerRadius(23)
+                            .onAppear {
+                                player.play()
+                            }
+                            .onDisappear {
+                                player.pause()
+                            }
+                    } else {
+                        Text("Error: Video not found!")
+                            .font(.title)
+                            .foregroundColor(.red)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
+                }
+                
+                // Nav Buttons
+                HStack {
+                    Spacer()
+                    NavigationLink(destination: ColoringView(child: child, completedLetters: $completedLetters)) {
+                        Image(systemName: "arrowshape.left.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 81, height: 81) // Expand to fill horizontal space
+                            .background(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                            )
+                    }
+                    .onTapGesture {
+                        child.moveToNextLetter()
+                    }
+                    .padding()
                 }
             }
         }
+        .padding()
         .navigationBarBackButtonHidden(true)
-        .globalFont(size: 150)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("PrimaryColor"))
         .ignoresSafeArea()
+        }
     }
 }

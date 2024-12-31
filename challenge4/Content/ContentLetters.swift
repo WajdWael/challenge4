@@ -7,48 +7,26 @@
 
 import Foundation
 
-//Words Data
 var letters: [Letter] = [
     Letter(
         letter: "أ",
-        coloringCanvas: "A-arabic-Coloring",
-        puzzleArray: [
-            "pic1",
-            "pic2",
-            "pic3",
-            "pic4",
-            "pic5",
-            "pic6"
-        ],
+        coloringCanvas: "NewA-1",
+        puzzleImage: "puzzle-A",
         videoTutorial: "alef__letter",
         isCompleted: false
     ),
     Letter(
         letter: "ب ت ث",
-        coloringCanvas: "2",
-        puzzleArray: [
-            "picA1",
-            "picA2",
-            "picA3",
-            "picA4",
-            "picA5",
-            "picA6"
-        ],
+        coloringCanvas: "NewBCD-2",
+        puzzleImage: "puzzle-Group1",
         videoTutorial: "first_group_letters",
         isCompleted: false
     ),
-//    Letter(
-//        letter: "ي",
-//        coloringCanvas: "A-arabic-Coloring",
-//        puzzleArray: [
-//            "picY1",
-//            "picY2",
-//            "picY3",
-//            "picY4",
-//            "picY5",
-//            "picY6"
-//        ],
-//        videoTutorial: "alefletter",
-//        isCompleted: false
-//    ),
+    Letter(
+        letter: "ي",
+        coloringCanvas: "NewZ-3",
+        puzzleImage: "Puzzle-y",
+        videoTutorial: "yaa_letter",
+        isCompleted: false
+    ),
 ]
