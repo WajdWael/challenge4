@@ -12,11 +12,13 @@ import _SwiftData_SwiftUI
 struct New_Home_Page: View {
     
     @Environment(\.modelContext) var context
+    
     @ObservedObject var child: Child
     @State private var isAnimatingFirstHome = false
     @State private var isAnimatingSecondHome = false
     @Binding var completedWords: [Bool]
     @Binding var completedLetters: [Bool]
+    @State private var isActivityCompleted = false
     
     
     var isLocked: Bool
@@ -57,7 +59,7 @@ struct New_Home_Page: View {
                         
                         HStack {
                             
-                            NavigationLink(destination: Letters_Levels()) {
+                            NavigationLink(destination: Letters_Levels(child:child, completedLetters:$completedLetters)) {
                                 Image("Brown_home")
                                     .resizable()
                                     .frame(width: 500, height: 500)
@@ -81,7 +83,7 @@ struct New_Home_Page: View {
                                 
                                 
                             } else {
-                                NavigationLink(destination: Words_Levels(child:child)) {
+                                NavigationLink(destination: Words_Levels(child:child, completedWords:$completedWords, completedLetters:$completedLetters, isActivityCompleted:$isActivityCompleted)) {
                                     Image("Bage_home")
                                         .resizable()
                                         .frame(width: 500, height: 500)

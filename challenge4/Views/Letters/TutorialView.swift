@@ -29,7 +29,7 @@ struct TutorialView: View {
     }
 
     var body: some View {
-        let letterData = letters[child.currentWordIndex]
+        let letterData = letters[child.currentLetterIndex]
 
         NavigationStack {
         ZStack {

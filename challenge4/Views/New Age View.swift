@@ -1,12 +1,19 @@
+//
+//  New Age View.swift
+//  Baraem Al-Lugha
+//
+//  Created by Alaa Emad Alhamzi on 30/06/1446 AH.
+//
+
 import SwiftUI
 
-struct AgeView: View {
+struct New_Age_View: View {
     
     @State private var selectedAge: Int?
     @State private var child: Child?
     @State private var completedWords: [Bool] = [false, false, false]
     @State private var completedLetters: [Bool] = [false, false, false]
-   
+    @State private var isLocked = false
     
     let ages = [
         "Ballon_age5",
@@ -15,15 +22,21 @@ struct AgeView: View {
         "Ballon_age8"
     ]
     var body: some View {
+        
         NavigationStack {
+            
             VStack {
+                
                 Text("اختر عمرك")
                     .globalFont(size: 130)
+                
                 HStack {
+                    
                     ForEach(ages, id: \.self) { age in
-                        let destinationLetters = HomeViewLetters(child: Child(age: age, currentWordIndex: 0, currentLevelPrograss : 0, currentLetterIndex: 0), completedLetters: $completedLetters)
                         
-                        let destinationWords = HomeViewWords(child: Child(age: age, currentWordIndex: 0, currentLevelPrograss : 0, currentLetterIndex: 0), completedWords: $completedWords, completedLetters: $completedLetters)
+                        let destinationLetters = New_Home_Page(child: Child(age: age, currentWordIndex: 0, currentLevelPrograss : 0, currentLetterIndex: 0), completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)
+                        
+                        let destinationWords = New_Home_Page(child: Child(age: age, currentWordIndex: 0, currentLevelPrograss : 0, currentLetterIndex: 0), completedWords: $completedWords, completedLetters: $completedLetters, isLocked: isLocked)
                         
                         if (age == "Ballon_age5" || age == "Ballon_age6"){
                             NavigationLink (
@@ -50,6 +63,6 @@ struct AgeView: View {
 
 // Preview
 #Preview {
-    AgeView()
+    New_Age_View()
 }
 

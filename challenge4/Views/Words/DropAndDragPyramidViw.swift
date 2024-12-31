@@ -16,6 +16,7 @@ struct DragAndDropPyramidView: View {
     @State private var isPartCorrect: [Bool] = [false, false, false, false]
 
     @ObservedObject var child : Child
+    @Binding var isActivityCompleted: Bool
     
     @State private var navigateToHomePage = false  // Flag to trigger navigation
     @State private var showCompletionPopup = false // Flag to show the completion popup
@@ -103,7 +104,7 @@ struct DragAndDropPyramidView: View {
                 
                // if isPartCorrect.allSatisfy({ $0 }) {
                     NavigationLink(
-                        destination: SandDrawView(child:child, completedWords: $completedWords, completedLetters: $completedLetters),
+                        destination: SandDrawView(child:child, completedWords: $completedWords, completedLetters: $completedLetters, isActivityCompleted:$isActivityCompleted),
                         label: {
                             Image(systemName: "arrow.backward.circle")
                                 .resizable()

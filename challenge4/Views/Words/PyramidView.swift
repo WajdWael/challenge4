@@ -47,7 +47,7 @@ struct PyramidView: View {
                 .padding()
 
                 NavigationLink(destination: DragAndDropPyramidView(
-                    completedWords: $completedWords, completedLetters: $completedLetters, child:child
+                    completedWords: $completedWords, completedLetters: $completedLetters, child:child, isActivityCompleted:$isActivityCompleted
                 )) {
                     Image(systemName: "arrow.forward.circle")
                         .resizable()

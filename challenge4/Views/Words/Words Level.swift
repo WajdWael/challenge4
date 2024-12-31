@@ -11,6 +11,9 @@ struct Words_Levels: View {
     
    
     @ObservedObject var child: Child
+    @Binding var completedWords: [Bool]
+    @Binding var completedLetters: [Bool]
+    @Binding  var isActivityCompleted : Bool
     
     var words: [Word] = [
         Word(word: "أرنب", imageName: "Rabbit", backgroundColor: "Pink",isCompleted: false),
@@ -31,9 +34,7 @@ struct Words_Levels: View {
                 VStack{
                     
                     HStack{
-                        
-                        //                        NavigationLink(destination: New_Home_Page(child: child, completedWords: $completedWords, completedLetters: $completedLetters, isLocked: false)) {
-                        
+                       
                         Button {
                             
                         } label: {
@@ -67,8 +68,27 @@ struct Words_Levels: View {
                        ScrollView(.horizontal){
                            
                            
+//                           HStack{
+//                               ForEach(0..<3){ index in
+//                                   
+//                                   ZStack{
+//                                       
+//                                       Rectangle()
+//                                           .frame(width: 330, height: 380)
+//                                           .foregroundStyle(Color("SecondaryColor").opacity(0.6))
+//                                           .cornerRadius(20)
+//                                           .padding()
+//                                       
+//                                       Image(words[index].imageName)
+//                                   }
+//                                   
+//                               }
+//                               
+//                           }
+                           
                            HStack{
-                               ForEach(0..<3){ index in
+                               
+                               NavigationLink(destination: FlashCardView(child: child, isActivityCompleted: $isActivityCompleted, completedWords: $completedWords, completedLetters: $completedLetters)){
                                    
                                    ZStack{
                                        
@@ -78,12 +98,85 @@ struct Words_Levels: View {
                                            .cornerRadius(20)
                                            .padding()
                                        
-                                       Image(words[index].imageName)
+                                      Image("Rabbit")
                                    }
+                               }
+                               
+                               
+                               if completedWords[0] == true {
+                                   
+                                   NavigationLink(destination:FlashCardView(child: child, isActivityCompleted: $isActivityCompleted, completedWords: $completedWords, completedLetters: $completedLetters)){
+                                       
+                                       ZStack{
+                                           
+                                           Rectangle()
+                                               .frame(width: 330, height: 380)
+                                               .foregroundStyle(Color("SecondaryColor").opacity(0.6))
+                                               .cornerRadius(20)
+                                               .padding()
+                                           
+                                           
+                                           Image("Horse")
+                                           
+                                          
+                                              
+                                       }
+                                   }
+                                   
+                               }else{
+                                   
+                                   ZStack{
+                                       Rectangle()
+                                           .frame(width: 330, height: 380)
+                                           .foregroundStyle(Color(.gray).opacity(0.6))
+                                           .cornerRadius(20)
+                                           .padding()
+                                       
+                                       Image("Lock")
+                                   }
+                                   
                                    
                                }
                                
+                               
+                               if completedWords[1] == true {
+                                   
+                                   NavigationLink(destination:FlashCardView(child: child, isActivityCompleted: $isActivityCompleted, completedWords: $completedWords, completedLetters: $completedLetters)){
+                                       
+                                       ZStack{
+                                           
+                                           Rectangle()
+                                               .frame(width: 330, height: 380)
+                                               .foregroundStyle(Color("SecondaryColor").opacity(0.6))
+                                               .cornerRadius(20)
+                                               .padding()
+                                           
+                                           
+                                           Image("Home")
+                                           
+                                          
+                                              
+                                       }
+                                   }
+                                   
+                               }else{
+                                   
+                                   ZStack{
+                                       Rectangle()
+                                           .frame(width: 330, height: 380)
+                                           .foregroundStyle(Color(.gray).opacity(0.6))
+                                           .cornerRadius(20)
+                                           .padding()
+                                       
+                                       Image("Lock")
+                                   }
+                                   
+                                   
+                               }
                            }
+                           
+                           
+                           
                            
                        }.contentMargins(50, for: .scrollContent)
                    }

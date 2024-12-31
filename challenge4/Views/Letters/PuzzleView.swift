@@ -182,7 +182,7 @@ struct PuzzleView: View {
                                 .scaleEffect(0.75)
 
                             NavigationLink(
-                                destination: HomeViewLetters(child: child, completedLetters: $completedLetters),
+                                destination: Letters_Levels(child: child, completedLetters: $completedLetters),
                                 isActive: $navigateToHome
                             ) {
                                 Button(action: {
@@ -268,6 +268,16 @@ struct PuzzleView: View {
 
     private func markLetterAsCompleted() {
         completedLetters[child.currentLetterIndex] = true
-        child.moveToNextLetter()
+        
+        if child.currentLetterIndex < letters.count - 1 {
+            
+            completedLetters[child.currentLetterIndex] = true
+            
+            child.currentLetterIndex += 1
+            
+        } else {
+            print("All letters completed!")
+        }
+       
     }
 }

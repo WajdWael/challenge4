@@ -16,10 +16,12 @@ import SwiftUI
 import AVFoundation
 
 struct FlashCardView: View {
+    
+    @ObservedObject var child: Child
     @Binding var isActivityCompleted: Bool
     @Binding var completedWords: [Bool]
     @Binding var completedLetters: [Bool]
-    @ObservedObject var child: Child
+   
 
     var body: some View {
         let word = words[child.currentWordIndex]

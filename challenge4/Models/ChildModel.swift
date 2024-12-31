@@ -24,6 +24,7 @@ class Child: ObservableObject {
     func moveToNextLetter() {
         markCurrentLetterCompleted()
         if currentLetterIndex < letters.count - 1 {
+         
             currentLetterIndex += 1
         } else {
             print("All letters completed!")

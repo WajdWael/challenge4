@@ -74,6 +74,7 @@ struct SandDrawView: View {
     @ObservedObject var child : Child
     @Binding var completedWords: [Bool]
     @Binding var completedLetters: [Bool]
+    @Binding var isActivityCompleted: Bool
     @State private var navigateToHomePage = false  // Flag to trigger navigation
     @State private var audioPlayer: AVAudioPlayer?
     
@@ -204,9 +205,12 @@ struct SandDrawView: View {
                                     .foregroundColor(.white)
                                     .cornerRadius(10)
                             }
+                            
+                         
+                            
                             .background(
                                 NavigationLink(
-                                    destination: HomeViewWords(child: child,  completedWords: $completedWords, completedLetters:$completedLetters),
+                                    destination: Words_Levels(child: child,  completedWords: $completedWords, completedLetters:$completedLetters, isActivityCompleted:$isActivityCompleted),
                                     isActive: $navigateToHomePage,
                                     label: { EmptyView() }
                                 )
@@ -237,7 +241,10 @@ struct SandDrawView: View {
             
             if   child.currentWordIndex < words.count - 1  {
                 
+                completedWords[child.currentWordIndex] = true
+                
                 child.currentWordIndex += 1
+                
             }else{
                 child.currentWordIndex = 0
             }

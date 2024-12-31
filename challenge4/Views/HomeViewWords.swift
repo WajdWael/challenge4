@@ -35,7 +35,7 @@ struct HomeViewWords: View {
                                 
                             }.offset(x: 680, y: -250)
                             
-                            NavigationLink(destination: FlashCardView(isActivityCompleted: $isActivityCompleted, completedWords: $completedWords, completedLetters: $completedLetters, child: child)) {
+                            NavigationLink(destination: FlashCardView(child: child, isActivityCompleted: $isActivityCompleted, completedWords: $completedWords, completedLetters: $completedLetters)) {
                                 Image("Bage_house")
                                 
                             }.offset(x: -500, y: 200)
