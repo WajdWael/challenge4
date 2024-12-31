@@ -1,6 +1,4 @@
 import SwiftUI
-
-// MARK: - PuzzlePiece Model
 struct PuzzlePiece: Identifiable {
     var id = UUID()
     var image: UIImage
@@ -171,38 +169,6 @@ struct PuzzleView: View {
 
         pieces = []
 
-        let puzzleAreaWidth = pieceWidth * CGFloat(cols)
-        let puzzleAreaHeight = pieceHeight * CGFloat(rows)
-        let minX = (screenSize.width - puzzleAreaWidth) / 2
-        let bottomY = screenSize.height - pieceHeight - 20 // Align pieces at the bottom with padding
-
-        for row in 0..<rows {
-            for col in 0..<cols {
-                let correctPosition = CGPoint(
-                    x: CGFloat(col) * pieceWidth + pieceWidth / 2,
-                    y: CGFloat(row) * pieceHeight + pieceHeight / 2
-                )
-                let currentPosition = CGPoint(
-                    x: minX + CGFloat(col) * pieceWidth + pieceWidth / 2,
-                    y: bottomY
-                )
-                let piece = PuzzlePiece(
-                    image: Image(uiImage: images[row * cols + col]),
-                    correctPosition: correctPosition,
-                    currentPosition: currentPosition
-                )
-                pieces.append(piece)
-            }
-        }
-    }
-
-    func splitImageIntoPieces(image: UIImage, rows: Int, cols: Int) -> [UIImage] {
-        guard let cgImage = image.cgImage else { return [] }
-        let pieceWidth = cgImage.width / cols
-        let pieceHeight = cgImage.height / rows
-
-        var pieces: [UIImage] = []
-
         for row in 0..<rows {
             for col in 0..<cols {
                 // Reverse the column index to fix the horizontal flipping
@@ -251,17 +217,4 @@ struct PuzzleView: View {
         completedLetters[child.currentLetterIndex] = true
         child.moveToNextLetter()
     }
-//
-//    private func checkPlacement(for piece: inout PuzzlePiece) {
-//        let snapThreshold: CGFloat = pieceWidth / 3
-//        if abs(piece.currentPosition.x - piece.correctPosition.x) < snapThreshold &&
-//            abs(piece.currentPosition.y - piece.correctPosition.y) < snapThreshold {
-//            piece.currentPosition = piece.correctPosition
-//            piece.isLocked = true
-//        }
-//    }
-//
-//    private func checkIfPuzzleComplete() {
-//        isPuzzleComplete = pieces.allSatisfy { $0.isLocked }
-//    }
 }
