@@ -17,6 +17,7 @@ struct HomeViewWords: View {
 
     var body: some View {
         let word = words[child.currentWordIndex]
+        
         ZStack{
             NavigationStack{
                 GeometryReader { geometry in

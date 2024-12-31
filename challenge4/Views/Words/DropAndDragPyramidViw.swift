@@ -21,8 +21,10 @@ struct DragAndDropPyramidView: View {
     @State private var showCompletionPopup = false // Flag to show the completion popup
     
     var wordParts: [String] {
+        
         let word = words[child.currentWordIndex]
         return splitWord(word.word)
+        
     }
 
     @State private var audioPlayer: AVAudioPlayer?
@@ -112,6 +114,9 @@ struct DragAndDropPyramidView: View {
                 
 
                     .padding()
+            }.onAppear{
+                
+                playSound(for: "رتب أجزاء الكلمة في الهرم")
             }
            
         }

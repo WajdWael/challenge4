@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct PyramidView: View {
     //@Binding var currentWordIndex: Int
@@ -13,6 +14,7 @@ struct PyramidView: View {
     @Binding var completedWords: [Bool]
     @Binding var completedLetters: [Bool]
 
+    @State private var audioPlayer: AVAudioPlayer?
     @ObservedObject var child : Child
     
     let word : Word
@@ -52,10 +54,14 @@ struct PyramidView: View {
                         .foregroundStyle(Color.orange)
                         .frame(width: 78, height: 78)
                 }
+            }.onAppear{
+                playSound(for: "اضغط على أجزاء الهرم لسماع النطق")
             }
+            
             .padding()
         }
         .navigationBarBackButtonHidden(true)
+        
     }
 
     func splitWord(_ word: String) -> [String] {
@@ -65,5 +71,21 @@ struct PyramidView: View {
             parts.append(String(word[word.startIndex..<index]))
         }
         return parts
+    }
+    
+    
+    // تشغيل الصوت لجزء معين
+    func playSound(for part: String) {
+        // اسم الملف الصوتي يجب أن يتطابق مع النص (part)
+        if let soundURL = Bundle.main.url(forResource: part, withExtension: "mp3") {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
+                audioPlayer?.play()
+            } catch {
+                print("Error playing sound for \(part): \(error.localizedDescription)")
+            }
+        } else {
+            print("Sound file for \(part) not found.")
+        }
     }
 }
