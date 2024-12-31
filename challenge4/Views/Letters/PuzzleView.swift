@@ -1,12 +1,6 @@
-//
-//  PuzzleView.swift
-//  challenge4
-//
-//  Created by Wajd Wael on 18/06/1446 AH.
-//
-
 import SwiftUI
 
+// MARK: - PuzzlePiece Model
 struct PuzzlePiece: Identifiable {
     var id = UUID()
     var image: UIImage
@@ -176,6 +170,38 @@ struct PuzzleView: View {
         let croppedPieceHeight = cgImage.height / rows
 
         pieces = []
+
+        let puzzleAreaWidth = pieceWidth * CGFloat(cols)
+        let puzzleAreaHeight = pieceHeight * CGFloat(rows)
+        let minX = (screenSize.width - puzzleAreaWidth) / 2
+        let bottomY = screenSize.height - pieceHeight - 20 // Align pieces at the bottom with padding
+
+        for row in 0..<rows {
+            for col in 0..<cols {
+                let correctPosition = CGPoint(
+                    x: CGFloat(col) * pieceWidth + pieceWidth / 2,
+                    y: CGFloat(row) * pieceHeight + pieceHeight / 2
+                )
+                let currentPosition = CGPoint(
+                    x: minX + CGFloat(col) * pieceWidth + pieceWidth / 2,
+                    y: bottomY
+                )
+                let piece = PuzzlePiece(
+                    image: Image(uiImage: images[row * cols + col]),
+                    correctPosition: correctPosition,
+                    currentPosition: currentPosition
+                )
+                pieces.append(piece)
+            }
+        }
+    }
+
+    func splitImageIntoPieces(image: UIImage, rows: Int, cols: Int) -> [UIImage] {
+        guard let cgImage = image.cgImage else { return [] }
+        let pieceWidth = cgImage.width / cols
+        let pieceHeight = cgImage.height / rows
+
+        var pieces: [UIImage] = []
 
         for row in 0..<rows {
             for col in 0..<cols {
