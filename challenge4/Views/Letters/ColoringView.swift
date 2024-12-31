@@ -6,92 +6,190 @@
 //
 
 import SwiftUI
-struct Line {
-    var points: [CGPoint] = [] // Default empty array for points
-    var color: Color = .red    // Default color
-    var lineWidth: CGFloat = 2.0  // Default line width
-
-    init(points: [CGPoint] = [], color: Color = .red, lineWidth: CGFloat = 2.0) {
-        self.points = points
-        self.color = color
-        self.lineWidth = lineWidth
-    }
-}
+import PencilKit
 
 struct ColoringView: View {
+    @State private var canvasView = PKCanvasView()
+    @State private var toolPicker = PKToolPicker()
+    @State private var isToolPickerVisible: Bool = false
+    @State private var scale: CGFloat = 1.0
+        
     @ObservedObject var child: Child
     @State private var isActivityCompleted = false
     @Binding var completedLetters: [Bool]
-
-    @State private var currentLine = Line() // Initialize Line struct here
-    @State private var lines: [Line] = []
-
-    @State private var selectedColor: Color = .clear // Initialize with a clear color
-
+    
+    
     var body: some View {
-        let letter = letters[child.currentWordIndex]
-        let imageName = letter.coloringCanvas // Assuming coloringCanvas is the image name
+        let letter = letters[child.currentLetterIndex]
+        let imageName = letter.coloringCanvas
+        
+        ZStack {
+            Color("PrimaryColor").ignoresSafeArea()
 
-        GeometryReader { geometry in
             VStack {
-                // Top buttons (adjusted for iPad layout)
-                HStack {
-                    // Home button
+                // Home Button
+                HStack{
                     NavigationLink(destination: HomeViewLetters(child: child, completedLetters: $completedLetters)) {
-                        
-                        Image(systemName: "house.circle")
-                            .resizable()
-                            .foregroundStyle(Color.orange)
-                            .frame(width: 48, height: 48)
+                        Image(systemName: "house.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 81, height: 81)
+                            .background(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                            )
                     }
-
                     Spacer()
-
-                    // Forward button
-                    NavigationLink(destination: HomeViewLetters(child: child, completedLetters: $completedLetters)) {
-                        Image(systemName: "arrow.forward.circle")
-                            .resizable()
-                            .foregroundStyle(Color.orange)
-                            .frame(width: 48, height: 48)
-                    }
-                }
-                .padding(.top, 10) // Add a small top padding for spacing
-
-                // Image and Canvas (filling available space)
+                }.padding()
+                
+                // View content
                 ZStack {
-                    // Correctly load and display the image as background
-                    Image(imageName) // Use the image name here
+                    Image(imageName)
                         .resizable()
-                        .scaledToFit() // Adjust the image to fit within the view
-                        .frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.5) // Adjust the size based on available space
-
-                    // Canvas overlay for drawing
-                    Canvas { context, size in
-                        for line in lines {
-                            var path = Path()
-                            path.addLines(line.points)
-                            context.stroke(path, with: .color(line.color), lineWidth: line.lineWidth)
-                        }
-                    }
-                    .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                        .onChanged { value in
-                            let newPoint = value.location
-                            currentLine.points.append(newPoint)
-                            currentLine.color = selectedColor // Use the selected color
-                            lines.append(currentLine)
-                        }
-                        .onEnded { _ in
-                            currentLine = Line(points: [], color: selectedColor) // Keep color after drawing
-                        })
+                        .scaledToFit()
+                        .scaleEffect(scale)
+                        .frame(width: 1085, height: 484)
+                    
+                    PencilKitCanvasView(canvasView: $canvasView, toolPicker: $toolPicker)
+                        .frame(width: 1085, height: 484)
+                        .background(Color.clear)
+                        .cornerRadius(10)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                // Color Picker (positioned below the canvas)
-                ColorPickerView(selectedColor: $selectedColor)
-                    .padding(.top, 5) // Small top padding
+                
+                HStack {
+                    // right nav
+                    NavigationLink(destination: TutorialView(completedLetters: $completedLetters, child: child)) {
+                        Image(systemName: "arrowshape.right.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 81, height: 81) // Expand to fill horizontal space
+                            .background(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                            )
+                    }
+                    Spacer()
+                    
+                    // view content
+                    Button(action: {
+                        withAnimation {
+                            isToolPickerVisible.toggle()
+                            if isToolPickerVisible {
+                                toolPicker.setVisible(true, forFirstResponder: canvasView)
+                                canvasView.becomeFirstResponder()
+                            } else {
+                                toolPicker.setVisible(false, forFirstResponder: canvasView)
+                                canvasView.resignFirstResponder()
+                            }
+                        }
+                    }) {
+                        Image(systemName: "scribble.variable")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(isToolPickerVisible ? .blue : .gray)
+                            .padding()
+                    }
+                    Button(action: {
+                        canvasView.drawing = PKDrawing()
+                    }) {
+                        Image(systemName: "trash")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(.red)
+                            .padding()
+                    }
+                    
+                    // left nav
+                    Spacer()
+                    
+                    NavigationLink(destination: PuzzleView(completedLetters: $completedLetters, child: child)) {
+                        Image(systemName: "arrowshape.left.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white) // Foreground color (#464646)
+                            .padding()
+                            .frame(width: 81, height: 81) // Expand to fill horizontal space
+                            .background(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                            )
+                    }
+                    .onTapGesture {
+                        child.markCurrentLetterCompleted()
+                    }
+                }
+                .padding()
             }
-            .navigationBarBackButtonHidden(true)
-            .background(Color("PrimaryColor")) // Set the background color
+        }
+        .onAppear {
+            setupToolPicker()
+        }
+        .padding()
+        .navigationBarBackButtonHidden(true)
+        .background(Color("PrimaryColor"))
+        .ignoresSafeArea()
+    }
+    
+    private func setupToolPicker() {
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let _ = scene.windows.first {
+            toolPicker.setVisible(true, forFirstResponder: canvasView)
+            toolPicker.addObserver(canvasView)
+            canvasView.becomeFirstResponder()
         }
     }
 }
+
+struct PencilKitCanvasView: UIViewRepresentable {
+    @Binding var canvasView: PKCanvasView
+    @Binding var toolPicker: PKToolPicker
+
+    func makeUIView(context: Context) -> PKCanvasView {
+        canvasView.backgroundColor = .clear // Ensure the canvas is transparent
+        canvasView.drawingPolicy = .anyInput // Allow touch inputs for drawing
+        return canvasView
+    }
+    
+    func updateUIView(_ uiView: PKCanvasView, context: Context) {
+        // Update logic if needed
+    }
+}
+
+
+//                    Button(action: {
+//
+//                    }) {
+//                        Text("رجوع")
+//                            .globalFont(size: 50)
+//                            .foregroundColor(Color(red: 70 / 255, green: 70 / 255, blue: 70 / 255))
+//                            .padding()
+//                            .frame(width: 247, height: 81)
+//                            .background(
+//                                RoundedRectangle(cornerRadius: 20)
+//                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255))
+//                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+//                            )
+//                    }
+
+
+// Next Button
+//                    Button(action: {
+//                        print("Next button pressed")
+//                    }) {
+//                        Text("التالي")
+//                            .globalFont(size: 50)
+//                            .foregroundColor(Color(red: 70 / 255, green: 70 / 255, blue: 70 / 255)) // Foreground color (#464646)
+//                            .padding()
+//                            .frame(width: 247, height: 81) // Expand to fill horizontal space
+//                            .background(
+//                                RoundedRectangle(cornerRadius: 20)
+//                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+//                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+//                            )
+//                    }
