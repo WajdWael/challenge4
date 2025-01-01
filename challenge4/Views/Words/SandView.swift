@@ -178,8 +178,7 @@ struct SandDrawView: View {
                         Spacer()
                     }.padding()
                 }.onAppear(){
-                    
-                playSound(for: "جرب كتابة الكلمة على الرمل")
+                    playSound(for: "جرب كتابة الكلمة على الرمل")
                 }
             }
             .padding()
@@ -259,23 +258,14 @@ struct SandDrawView: View {
     }
     
     func markWordAsCompleted() {
-        
         var word  = words[child.currentWordIndex]
-        
         word.isCompleted = true
-        
-        
-            
-            if   child.currentWordIndex < words.count - 1  {
-                
+            if child.currentWordIndex < words.count - 1  {
                 completedWords[child.currentWordIndex] = true
-                
                 child.currentWordIndex += 1
-                
-            }else{
+            } else {
                 child.currentWordIndex = 0
             }
-        
         }
     
     func playSound(for part: String) {

@@ -1,4 +1,7 @@
 import SwiftUI
+import AVFoundation
+
+
 struct PuzzlePiece: Identifiable {
     var id = UUID()
     var image: UIImage
@@ -8,6 +11,7 @@ struct PuzzlePiece: Identifiable {
 }
 
 struct PuzzleView: View {
+    @State private var audioPlayer: AVAudioPlayer?
     @State private var pieces: [PuzzlePiece] = []
     @State private var isPuzzleComplete = false
     @State private var navigateToHome = false
@@ -132,6 +136,7 @@ struct PuzzleView: View {
                                             .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
                                     )
                             }
+                            .onAppear {playSound(for: "positiveEffect")}
                             .padding(.top, 20)
                         }
                         .padding()
@@ -191,9 +196,25 @@ struct PuzzleView: View {
                     }
                 }
             }
-        }.ignoresSafeArea()
-    }
+        }
 
+        .ignoresSafeArea()
+    }
+    
+    func playSound(for part: String) {
+        // اسم الملف الصوتي يجب أن يتطابق مع النص (part)
+        if let soundURL = Bundle.main.url(forResource: part, withExtension: "m4a") {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
+                audioPlayer?.play()
+            } catch {
+                print("Error playing sound for \(part): \(error.localizedDescription)")
+            }
+        } else {
+            print("Sound file for \(part) not found.")
+        }
+    }
+    
     private func setupPuzzle(for letter: Letter) {
         guard let bigImage = UIImage(named: letter.puzzleImage),
               let cgImage = bigImage.cgImage else { return }
