@@ -29,7 +29,7 @@ struct Words_Levels: View {
                     HStack {
                         NavigationLink(destination: New_Home_Page(child: child, completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)) {
                             
-                            Image(systemName: "arrowshape.right.fill")
+                            Image(systemName: "house.fill")
                                 .font(.system(size: 50))
                                 .foregroundColor(.white)
                                 .padding()

@@ -88,6 +88,7 @@ struct PuzzleView: View {
                                             .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
                                     )
                             }
+                            .padding(.top, -180)
                             Spacer()
                             
                             ScrollView(.horizontal, showsIndicators: false) {
@@ -125,7 +126,7 @@ struct PuzzleView: View {
                             Button(action: {
                                 showPopup = true // Show the pop-up
                             }) {
-                                Image(systemName: "arrowshape.left.fill")
+                                Image(systemName: "checkmark")
                                     .font(.system(size: 50))
                                     .foregroundColor(.white) // Foreground color (#464646)
                                     .padding()
@@ -137,7 +138,7 @@ struct PuzzleView: View {
                                     )
                             }
                             .onAppear {playSound(for: "positiveEffect")}
-                            .padding(.top, 20)
+                            .padding(.top, -180)
                         }
                         .padding()
                     }
@@ -162,7 +163,7 @@ struct PuzzleView: View {
                                 .bold()
                                 .foregroundStyle(Color(.black))
                             
-                            Text("لقد تم انهاء الحرف")
+                            Text("هل استمتعت بالتعلم؟🧐")
                                 .globalFont(size: 40)
                             
                             Image("SingleCharacter")

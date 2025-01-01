@@ -208,7 +208,7 @@ struct SandDrawView: View {
                                 .bold()
                                 .foregroundStyle(Color(.black))
                             
-                            Text("لقد تم إنهاء كلمة (\(word.word))")
+                            Text("لقد تعلمنا كلمة (\(word.word))\nهل استمتعت بالتعلم؟🧐")
                                 .globalFont(size: 40)
                             
                            Image("SingleCharacter")
