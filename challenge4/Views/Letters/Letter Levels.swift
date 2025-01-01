@@ -10,209 +10,99 @@ import SwiftUI
 struct Letters_Levels: View {
     
     @ObservedObject var child: Child
-    @Binding  var completedLetters: [Bool]
-    @Binding  var completedWords: [Bool]
+    @Binding var completedLetters: [Bool]
+    @Binding var completedWords: [Bool]
     @State var isActivityCompleted: Bool = true
     var isLocked: Bool
-    
-    //
-    //    var letters: [Letter] = [
-    //        Letter(
-    //            letter: "أ",
-    //            coloringCanvas: "NewA-1",
-    //            puzzleImage: "puzzle-A",
-    //            videoTutorial: "alef__letter",
-    //            isCompleted: false
-    //        ),
-    //        Letter(
-    //            letter: "ب ت ث",
-    //            coloringCanvas: "NewBCD-2",
-    //            puzzleImage: "puzzle-Group1",
-    //            videoTutorial: "first_group_letters",
-    //            isCompleted: false
-    //        ),
-    //        Letter(
-    //            letter: "ي",
-    //            coloringCanvas: "NewZ-3",
-    //            puzzleImage: "Puzzle-y",
-    //            videoTutorial: "yaa_letter",
-    //            isCompleted: false
-    //        ),
-    //    ]
-    
+
     var body: some View {
-        
-        
-        NavigationStack{
-            
-            
-            ZStack{
-                
+        NavigationStack {
+            ZStack {
                 Color("PrimaryColor").edgesIgnoringSafeArea(.all)
                 
-                VStack{
-                    
-                    HStack{
-                        
-                        /* NavigationLink(destination: New_Home_Page())*/ Button(action: {
-                            // make acction
+                VStack {
+                    HStack {
+                        Button(action: {
+                            // تنفيذ الإجراء المطلوب عند الرجوع
                         }, label: {
                             Image(systemName: "arrowshape.backward")
                                 .resizable()
                                 .foregroundStyle(Color.orange)
                                 .frame(width: 78, height: 78)
-                        }).offset(x: -230)
-                        
-                        
+                        })
+                        .offset(x: -230)
                         
                         Text("مراحل الحروف")
                             .globalFont(size: 100)
                             .bold()
-                        
-                        
-                        
-                        
                     }
                     
-                    // Spacer()
-                    
-                    HStack{
-                        
-                        ScrollView(.horizontal){
-                            
-                            
-                            HStack{
+                    HStack {
+                        ScrollView(.horizontal) {
+                            HStack {
+                                // مستطيل للألف
+                                NavigationLink(destination: TutorialView(completedLetters: $completedLetters, child: child, completedWords: $completedWords, isActivityCompleted: $isActivityCompleted, isLocked: isLocked)) {
+                                    ZStack {
+                                        Image("Image_Alef") // صورة الحرف "أ"
+                                            .resizable()
+                                            .frame(width: 330, height: 434)
+                                            .cornerRadius(20)
+                                            .padding()
+                                    }
+                                }
                                 
-                                    
-                                    
-                                    
-                                    
-                                        
-                                        
-                                NavigationLink(destination:TutorialView(completedLetters: $completedLetters, child: child, completedWords:$completedWords, isActivityCompleted:$isActivityCompleted, isLocked:isLocked)){
-                                            
-                                            ZStack{
-                                                
-                                                Rectangle()
-                                                    .frame(width: 330, height: 380)
-                                                    .foregroundStyle(Color("SecondaryColor").opacity(0.6))
-                                                    .cornerRadius(20)
-                                                    .padding()
-                                                
-                                                Text("أ")
-                                                    .globalFont(size: 30)
-                                                    .fontWeight(.bold)
-                                                    .padding()
-                                                    .foregroundColor(.black)
-                                                    .cornerRadius(10)
-                                            }
-                                        }
-                                
-                                
+                                // مستطيل للباء والتاء والثاء
                                 if completedLetters[0] == true {
-                                    NavigationLink(destination:TutorialView(completedLetters: $completedLetters, child: child, completedWords:$completedWords, isActivityCompleted:$isActivityCompleted, isLocked:isLocked)){
-                                        
-                                        ZStack{
-                                            
-                                            Rectangle()
-                                                .frame(width: 330, height: 380)
-                                                .foregroundStyle(Color("SecondaryColor").opacity(0.6))
+                                    NavigationLink(destination: TutorialView(completedLetters: $completedLetters, child: child, completedWords: $completedWords, isActivityCompleted: $isActivityCompleted, isLocked: isLocked)) {
+                                        ZStack {
+                                            Image("Image_Ba_Ta_Tha") // صورة "ب ت ث"
+                                                .resizable()
+                                                .frame(width: 330, height: 434)
                                                 .cornerRadius(20)
                                                 .padding()
-                                            
-                                            Text("ب ت ث")
-                                                .globalFont(size: 30)
-                                                .fontWeight(.bold)
-                                                .padding()
-                                                .foregroundColor(.black)
-                                                .cornerRadius(10)
-                                            
-                                            
-                                           
-                                               
                                         }
                                     }
-                                    
-                                }else{
-                                    
-                                    ZStack{
+                                } else {
+                                    ZStack {
                                         Rectangle()
-                                            .frame(width: 330, height: 380)
+                                            .frame(width: 330, height: 434)
                                             .foregroundStyle(Color(.gray).opacity(0.6))
                                             .cornerRadius(20)
                                             .padding()
                                         
-                                        Image("Lock")
+                                        Image("Lock") // صورة القفل
                                     }
-                                    
-                                    
                                 }
                                 
-                                
-                                
-                                if completedLetters[1] == true{
-                                    NavigationLink(destination:TutorialView(completedLetters: $completedLetters, child: child, completedWords:$completedWords, isActivityCompleted:$isActivityCompleted, isLocked:isLocked)){
-                                        
-                                        ZStack{
-                                            
-                                            Rectangle()
-                                                .frame(width: 330, height: 380)
-                                                .foregroundStyle(Color("SecondaryColor").opacity(0.6))
+                                // مستطيل للياء
+                                if completedLetters[1] == true {
+                                    NavigationLink(destination: TutorialView(completedLetters: $completedLetters, child: child, completedWords: $completedWords, isActivityCompleted: $isActivityCompleted, isLocked: isLocked)) {
+                                        ZStack {
+                                            Image("Image_Ya") // صورة "ي"
+                                                .resizable()
+                                                .frame(width: 330, height: 434)
                                                 .cornerRadius(20)
                                                 .padding()
-                                            
-                                            Text("ي")
-                                                .globalFont(size: 30)
-                                                .fontWeight(.bold)
-                                                .padding()
-                                                .foregroundColor(.black)
-                                                .cornerRadius(10)
                                         }
                                     }
-                                    
-                                }else{
-                                    
-                                    
-                                    ZStack{
+                                } else {
+                                    ZStack {
                                         Rectangle()
-                                            .frame(width: 330, height: 380)
+                                            .frame(width: 330, height: 434)
                                             .foregroundStyle(Color(.gray).opacity(0.6))
                                             .cornerRadius(20)
                                             .padding()
                                         
-                                        Image("Lock")
+                                        Image("Lock") // صورة القفل
                                     }
                                 }
-                                
-                                
-                                
-                                        
-                                    }
-                                    
-                                   
-                                        
-                          
-                                        
-                                        
-                                    }
-                                    
-                                }
-                                
-                            }.contentMargins(50, for: .scrollContent)
+                            }
+                            .contentMargins(50, for: .scrollContent)
                         }
-                    }.navigationBarBackButtonHidden(true)
-                    
-                    
-                    
+                    }
                 }
             }
-            
-            
-            
-   
-    
-
-
-//#Preview {
-//    Letters_Levels(completedLetters: $completedLetters, child: child)
-//}
+            .navigationBarBackButtonHidden(true)
+        }
+    }
+}
