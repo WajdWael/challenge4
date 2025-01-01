@@ -77,94 +77,119 @@ struct SandDrawView: View {
     @Binding var isActivityCompleted: Bool
     @State private var navigateToHomePage = false  // Flag to trigger navigation
     @State private var audioPlayer: AVAudioPlayer?
-    
+    var isLocked: Bool
     var body: some View {
         
         let word = words[child.currentWordIndex]
-        
-        VStack(spacing: 8) {
-            HStack {
-                // Undo/Delete Button in Circle (on the left)
-                Button(action: {
-                }) {
-                    Image(systemName: "house.circle")
-                        .resizable()
-                        .foregroundStyle(Color.orange)
-                        .frame(width: 78, height: 78)
-                }
-                Spacer()
-                Button(action: {
-                    viewModel.clearCanvas()
-                }) {
-                    Image(systemName: "trash.circle")
-                        .resizable()
-                        .foregroundStyle(Color.orange)
-                        .frame(width: 78, height: 78)
+        ZStack{
+            VStack{
+
+                HStack{
+                    NavigationLink(destination: New_Home_Page(child: child, completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)) {
+                        
+                        Image(systemName: "house.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 81, height: 81)
+                            .background(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                            )
+                    }
+                    Spacer()
+                    Text(word.word)
+                        .globalFont(size: 70)
+                        .bold()
+                        .padding()
+                    
+                    Spacer()
+                }.padding()
+
+                
+                VStack(spacing: 8) {
+                    ZStack {
+                        Image("Sand")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 952, height: 476)
+                            .cornerRadius(15)
+                            .shadow(radius: 5)
+
+                        Canvas { context, size in
+                            for point in viewModel.points {
+                                let baseColor = point.isEraser ? Color("background") : Color(red: 0.76, green: 0.58, blue: 0.37)
+                                
+                                let shadowColor = Color.black.opacity(0.7)
+                                let shadowOffset = CGSize(width: 2, height: 2)
+                                let shadowRect = CGRect(x: point.x - 6 + shadowOffset.width, y: point.y - 6 + shadowOffset.height, width: 14, height: 14)
+                                context.fill(Path(ellipseIn: shadowRect), with: .color(shadowColor))
+
+                                let rect = CGRect(x: point.x - 6, y: point.y - 6, width: 14, height: 14)
+                                context.fill(Path(ellipseIn: rect), with: .color(baseColor))
+                            }
+                        }
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { value in
+                                    let newPoint = SandDrawPoint(
+                                        x: value.location.x,
+                                        y: value.location.y,
+                                        isEraser: viewModel.isEraser
+                                    )
+                                    viewModel.addPoint(newPoint)
+                                }
+                        )
+                    }
+                    .frame(width: 952, height: 476)
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            viewModel.clearCanvas()
+                        }) {
+                            Image(systemName: "trash")
+                                .font(.system(size: 50))
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 81, height: 81)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 100)
+                                        .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                        .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                                )
+                        }
+                        .padding()
+                        Button(action: {
+                            showPopup = true // Show the pop-up
+                        }) {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 50))
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 81, height: 81)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 100)
+                                        .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                        .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                                )
+                        }
+
+                        Spacer()
+                    }.padding()
+                }.onAppear(){
+                    
+                playSound(for: "جرب كتابة الكلمة على الرمل")
                 }
             }
             .padding()
-
-            // Text below the progress bar
-            Text(word.word)
-                .fontWeight(.bold)
-                .foregroundColor(.black)
-                .globalFont(size: 60)
-
-            // Drawing Rectangle with background image "sand_texture"
-            ZStack {
-                Image("Sand")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 952, height: 476)
-                    .cornerRadius(15)
-                    .shadow(radius: 5)
-
-                Canvas { context, size in
-                    for point in viewModel.points {
-                        let baseColor = point.isEraser ? Color("background") : Color(red: 0.76, green: 0.58, blue: 0.37)
-                        
-                        let shadowColor = Color.black.opacity(0.7)
-                        let shadowOffset = CGSize(width: 2, height: 2)
-                        let shadowRect = CGRect(x: point.x - 6 + shadowOffset.width, y: point.y - 6 + shadowOffset.height, width: 14, height: 14)
-                        context.fill(Path(ellipseIn: shadowRect), with: .color(shadowColor))
-
-                        let rect = CGRect(x: point.x - 6, y: point.y - 6, width: 14, height: 14)
-                        context.fill(Path(ellipseIn: rect), with: .color(baseColor))
-                    }
-                }
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { value in
-                            let newPoint = SandDrawPoint(
-                                x: value.location.x,
-                                y: value.location.y,
-                                isEraser: viewModel.isEraser
-                            )
-                            viewModel.addPoint(newPoint)
-                        }
-                )
-            }
-            .frame(width: 952, height: 476)
-
-            // Check mark button under the drawing rectangle
-            Button(action: {
-                showPopup = true // Show the pop-up
-            }) {
-                Image(systemName: "checkmark.circle")
-                    .resizable()
-                    .foregroundStyle(Color.orange)
-                    .frame(width: 78, height: 78)
-            }
-            .padding(.top, 20)
-            
-        }.onAppear{
-            
-            playSound(for: "جرب كتابة الكلمة على الرمل")
+            .ignoresSafeArea()
         }
-        
+        .padding()
         .background(Color("PrimaryColor").edgesIgnoringSafeArea(.all))
         .edgesIgnoringSafeArea(.all)
-
+        .background(Color("PrimaryColor"))
+        
         // Pop-up implementation
         .overlay(
             Group {
@@ -210,7 +235,7 @@ struct SandDrawView: View {
                             
                             .background(
                                 NavigationLink(
-                                    destination: Words_Levels(child: child,  completedWords: $completedWords, completedLetters:$completedLetters, isActivityCompleted:$isActivityCompleted),
+                                    destination: Words_Levels(child: child,  completedWords: $completedWords, completedLetters:$completedLetters, isActivityCompleted:$isActivityCompleted, isLocked: isLocked),
                                     isActive: $navigateToHomePage,
                                     label: { EmptyView() }
                                 )
@@ -229,6 +254,8 @@ struct SandDrawView: View {
         )
         
         .navigationBarBackButtonHidden(true)
+        .ignoresSafeArea()
+
     }
     
     func markWordAsCompleted() {

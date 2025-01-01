@@ -6,14 +6,12 @@
 //
 
 import SwiftUI
-
 struct New_Age_View: View {
     
     @State private var selectedAge: Int?
     @State private var child: Child?
     @State private var completedWords: [Bool] = [false, false, false]
     @State private var completedLetters: [Bool] = [false, false, false]
-    @State private var isLocked = false
     
     let ages = [
         "Ballon_age5",
@@ -21,36 +19,28 @@ struct New_Age_View: View {
         "Ballon_age7",
         "Ballon_age8"
     ]
+    
     var body: some View {
-        
         NavigationStack {
-            
             VStack {
-                
                 Text("اختر عمرك")
                     .globalFont(size: 130)
                 
                 HStack {
-                    
                     ForEach(ages, id: \.self) { age in
+                        // Determine if isLocked should be true or false
+                        let isLocked = !(age == "Ballon_age7" || age == "Ballon_age8")
                         
-                        let destinationLetters = New_Home_Page(child: Child(age: age, currentWordIndex: 0, currentLevelPrograss : 0, currentLetterIndex: 0), completedWords:$completedWords, completedLetters: $completedLetters, isLocked: !isLocked)
-                        
-                        let destinationWords = New_Home_Page(child: Child(age: age, currentWordIndex: 0, currentLevelPrograss : 0, currentLetterIndex: 0), completedWords: $completedWords, completedLetters: $completedLetters, isLocked: isLocked)
-                        
-                        if (age == "Ballon_age5" || age == "Ballon_age6"){
-                            NavigationLink (
-                                destination: destinationLetters
-                            ) {
-                                Image(age)
-                            }.offset(y: -10)
-                        } else {
-                            NavigationLink (
-                                destination: destinationWords
-                            ) {
-                                Image(age)
-                            }.offset(y: -10)
-                        }
+                        NavigationLink(
+                            destination: New_Home_Page(
+                                child: Child(age: age, currentWordIndex: 0, currentLevelPrograss: 0, currentLetterIndex: 0),
+                                completedWords: $completedWords,
+                                completedLetters: $completedLetters,
+                                isLocked: isLocked
+                            )
+                        ) {
+                            Image(age)
+                        }.offset(y: -10)
                     }
                 }
             }
@@ -60,9 +50,3 @@ struct New_Age_View: View {
         }
     }
 }
-
-// Preview
-#Preview {
-    New_Age_View()
-}
-

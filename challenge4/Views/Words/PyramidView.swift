@@ -9,14 +9,14 @@ import SwiftUI
 import AVFoundation
 
 struct PyramidView: View {
-    //@Binding var currentWordIndex: Int
     @Binding var isActivityCompleted: Bool
     @Binding var completedWords: [Bool]
     @Binding var completedLetters: [Bool]
 
     @State private var audioPlayer: AVAudioPlayer?
     @ObservedObject var child : Child
-    
+    var isLocked: Bool
+
     let word : Word
     
     var body: some View {
@@ -27,9 +27,32 @@ struct PyramidView: View {
             Color("PrimaryColor").edgesIgnoringSafeArea(.all)
 
             VStack {
-                Text("قسم الكلمة: \(word.word)")
-                    .globalFont(size: 70)
-                    .bold()
+                HStack{
+                    NavigationLink(destination: New_Home_Page(child: child, completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)) {
+                        
+                        Image(systemName: "house.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 81, height: 81)
+                            .background(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                            )
+                    }
+                    Spacer()
+                    
+                    Text("قسم الكلمة: \(word.word)")
+                        .globalFont(size: 70)
+                        .bold()
+                        .padding()
+                    
+                    Spacer()
+                }.padding()
+                
+                Spacer()
+
 
                 VStack {
                     ForEach(0..<wordParts.count, id: \.self) { index in
@@ -46,13 +69,44 @@ struct PyramidView: View {
                 }
                 .padding()
 
-                NavigationLink(destination: DragAndDropPyramidView(
-                    completedWords: $completedWords, completedLetters: $completedLetters, child:child, isActivityCompleted:$isActivityCompleted
-                )) {
-                    Image(systemName: "arrow.forward.circle")
-                        .resizable()
-                        .foregroundStyle(Color.orange)
-                        .frame(width: 78, height: 78)
+                HStack {
+                    NavigationLink(destination: FlashCardView(
+                        child: child,
+                        isActivityCompleted: $isActivityCompleted,
+                        completedWords: $completedWords,
+                        completedLetters: $completedLetters,
+                        isLocked:isLocked
+                    )) {
+                        Image(systemName: "arrowshape.right.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 81, height: 81) // Expand to fill horizontal space
+                            .background(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                            )
+                    }
+                    Spacer()
+                    NavigationLink(destination: DragAndDropPyramidView(
+                        completedWords: $completedWords, completedLetters: $completedLetters, child:child, isActivityCompleted:$isActivityCompleted, isLocked:isLocked, word: word
+                    )) {
+                        Image(systemName: "arrowshape.left.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 81, height: 81) // Expand to fill horizontal space
+                            .background(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                    .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                            )
+                    }
+                    .onTapGesture {
+                        child.moveToNextLetter()
+                    }
+                    .padding()
                 }
             }.onAppear{
                 playSound(for: "اضغط على أجزاء الهرم لسماع النطق")

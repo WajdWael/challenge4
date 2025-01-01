@@ -22,21 +22,29 @@ struct Letters_Levels: View {
                 
                 VStack {
                     HStack {
-                        Button(action: {
-                            // تنفيذ الإجراء المطلوب عند الرجوع
-                        }, label: {
-                            Image(systemName: "arrowshape.backward")
-                                .resizable()
-                                .foregroundStyle(Color.orange)
-                                .frame(width: 78, height: 78)
-                        })
-                        .offset(x: -230)
-                        
+                        NavigationLink(destination: New_Home_Page(child: child, completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)) {
+                            
+                            Image(systemName: "arrowshape.right.fill")
+                                .font(.system(size: 50))
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 81, height: 81)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 100)
+                                        .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                        .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                                )
+                        }
+                        Spacer()
+                            
+                    }.padding()
+                    
+                    VStack{
                         Text("مراحل الحروف")
                             .globalFont(size: 100)
                             .bold()
                     }
-                    
+                    Spacer()
                     HStack {
                         ScrollView(.horizontal) {
                             HStack {
@@ -99,8 +107,8 @@ struct Letters_Levels: View {
                             }
                             .contentMargins(50, for: .scrollContent)
                         }
-                    }
-                }
+                    }.padding()
+                }.padding()
             }
             .navigationBarBackButtonHidden(true)
         }

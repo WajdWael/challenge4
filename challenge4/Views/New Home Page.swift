@@ -6,18 +6,13 @@
 //
 
 import SwiftUI
-import _SwiftData_SwiftUI
-
 struct New_Home_Page: View {
     
     @Environment(\.modelContext) var context
     
     @ObservedObject var child: Child
-    @State private var isAnimatingFirstHome = false
-    @State private var isAnimatingSecondHome = false
     @Binding var completedWords: [Bool]
     @Binding var completedLetters: [Bool]
-    @State private var isActivityCompleted = false
     var isLocked: Bool
 
     var body: some View {
@@ -36,24 +31,26 @@ struct New_Home_Page: View {
                                         .resizable()
                                         .frame(width: 713, height: 673)
                                     Text("بيت الأحرف")
-                                        .font(.system(size: 48, weight: .bold))
+                                        .globalFont(size: 48)
+                                        .bold()
                                         .foregroundColor(.black)
                                 }
-                                .scaleEffect(isAnimatingFirstHome ? 1.1 : 1.0)
                             }
                             
-                            if completedLetters.allSatisfy({ $0 }) {
-                                NavigationLink(destination: Words_Levels(child: child, completedWords: $completedWords, completedLetters: $completedLetters, isActivityCompleted: $isActivityCompleted)) {
+                            // Words Home is always accessible if isLocked is false
+                            if !isLocked || completedLetters.allSatisfy({ $0 }) {
+                                NavigationLink(destination: Words_Levels(child: child, completedWords: $completedWords, completedLetters: $completedLetters, isActivityCompleted: .constant(false), isLocked: isLocked)) {
                                     VStack {
                                         Image("Word_home")
                                             .resizable()
                                             .frame(width: 713, height: 673)
                                         Text("بيت الكلمات")
-                                            .font(.system(size: 48, weight: .bold))
+                                            .globalFont(size: 48)
+                                            .bold()
                                             .foregroundColor(.black)
                                     }
                                 }
-                            } else if isLocked {
+                            } else {
                                 ZStack {
                                     Image("Word_home")
                                         .resizable()
@@ -70,21 +67,6 @@ struct New_Home_Page: View {
                     }
                 }
             }
-        }
-    }
-    
-    // Function to clear the database
-    private func resetDatabase() {
-        do {
-            let request = FetchDescriptor<Child>()
-            let children = try context.fetch(request)
-            for child in children {
-                context.delete(child)
-            }
-            try context.save()
-            print("قاعدة البيانات تم تنظيفها.")
-        } catch {
-            print("خطأ أثناء تنظيف قاعدة البيانات: \(error.localizedDescription)")
         }
     }
 }

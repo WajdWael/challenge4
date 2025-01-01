@@ -26,17 +26,10 @@ struct PuzzleView: View {
         let letter = letters[child.currentLetterIndex]
         let imageName = letter.puzzleImage
         
-        
-        ZStack {
-
-        NavigationStack{
-
-       
-                
-          
-               
+        ScrollView{
+            ZStack {
+                NavigationStack{
                     Color("PrimaryColor").ignoresSafeArea()
-                    
                     VStack {
                         // Navigation and Home Button
                         HStack {
@@ -142,13 +135,7 @@ struct PuzzleView: View {
                             .padding(.top, 20)
                         }
                         .padding()
-                        
-                        
-                        
-                        
                     }
-                    
-                
                 }.onAppear{
                     setupPuzzle(for: letter)
                 }
@@ -156,65 +143,55 @@ struct PuzzleView: View {
                 .navigationBarBackButtonHidden(true)
                 .background(Color("PrimaryColor"))
                 .ignoresSafeArea()
-                
-                    
-                        if showPopup {
-                            ZStack {
-                                // Background overlay
-                                Color.black.opacity(0.4)
-                                    .edgesIgnoringSafeArea(.all)
+                            
+                if showPopup {
+                    ZStack {
+                        // Background overlay
+                        Color.black.opacity(0.4)
+                            .edgesIgnoringSafeArea(.all)
 
-                                // Pop-up rectangle
-                                VStack(spacing: 10) {
-                                    Text("مبروك 🎉")
-                                        .globalFont(size: 60)
-                                        .bold()
-                                        .foregroundStyle(Color(.black))
-                                    
-                                    Text("لقد تم انهاء الحرف")
-                                        .globalFont(size: 40)
-                                    
-                                    Image("SingleCharacter")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .scaleEffect(0.75)
+                        // Pop-up rectangle
+                        VStack(spacing: 10) {
+                            Text("مبروك 🎉")
+                                .globalFont(size: 60)
+                                .bold()
+                                .foregroundStyle(Color(.black))
+                            
+                            Text("لقد تم انهاء الحرف")
+                                .globalFont(size: 40)
+                            
+                            Image("SingleCharacter")
+                                .resizable()
+                                .scaledToFit()
+                                .scaleEffect(0.75)
 
-                                    NavigationLink(
-                                        destination: Letters_Levels(child:child, completedLetters:$completedLetters, completedWords:$completedWords, isLocked:isLocked),
-                                        isActive: $navigateToHome
-                                    ) {
-                                        Button(action: {
-                                            markLetterAsCompleted()
-                                            navigateToHome = true
-                                        }) {
-                                            Text("انهاء")
-                                                .globalFont(size: 30)
-                                                .fontWeight(.bold)
-                                                .padding()
-                                                .background(Color.orange)
-                                                .foregroundColor(.white)
-                                                .cornerRadius(10)
-                                        }
-                                    }
+                            NavigationLink(
+                                destination: Letters_Levels(child:child, completedLetters:$completedLetters, completedWords:$completedWords, isLocked:isLocked),
+                                isActive: $navigateToHome
+                            ) {
+                                Button(action: {
+                                    markLetterAsCompleted()
+                                    navigateToHome = true
+                                }) {
+                                    Text("انهاء")
+                                        .globalFont(size: 30)
+                                        .fontWeight(.bold)
+                                        .padding()
+                                        .background(Color.orange)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(10)
                                 }
-                                .padding()
-                                .frame(width: 644, height: 594)
-                                .background(Color("PrimaryColor"))
-                                .cornerRadius(15)
-                                .shadow(radius: 10)
                             }
                         }
-                
-                
-            
-                
-//
-                
+                        .padding()
+                        .frame(width: 644, height: 594)
+                        .background(Color("PrimaryColor"))
+                        .cornerRadius(15)
+                        .shadow(radius: 10)
+                    }
+                }
             }
-       
-            
-        
-
+        }.ignoresSafeArea()
     }
 
     private func setupPuzzle(for letter: Letter) {
@@ -263,14 +240,13 @@ struct PuzzleView: View {
             piece.isLocked = true
         }
     }
-
+    
     private func checkIfPuzzleComplete() {
         isPuzzleComplete = pieces.allSatisfy { $0.isLocked }
         if isPuzzleComplete {
             child.markCurrentLetterCompleted()
         }
     }
-
 
     private func markLetterAsCompleted() {
         completedLetters[child.currentLetterIndex] = true
