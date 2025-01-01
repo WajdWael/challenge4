@@ -24,10 +24,8 @@ struct DragAndDropPyramidView: View {
     
     let word: Word
     var wordParts: [String] {
-        
         let word = words[child.currentWordIndex]
         return splitWord(word.word)
-        
     }
 
     @State private var audioPlayer: AVAudioPlayer?
@@ -41,7 +39,6 @@ struct DragAndDropPyramidView: View {
                 
                 HStack{
                     NavigationLink(destination: New_Home_Page(child: child, completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)) {
-                        
                         Image(systemName: "house.fill")
                             .font(.system(size: 50))
                             .foregroundColor(.white)
@@ -61,9 +58,7 @@ struct DragAndDropPyramidView: View {
                         .padding()
                     
                     Spacer()
-                }.padding()
-                
-                Spacer()
+                }
                 
                 HStack{
                     ZStack{
@@ -89,7 +84,7 @@ struct DragAndDropPyramidView: View {
                                     
                                 if let part = droppedParts[index] {
                                     Text(part)
-                                        .font(.largeTitle)
+                                        .globalFont(size: 60)
                                         .foregroundColor(isPartCorrect[index] ? .black : .red)
                                         .onAppear {playSound(for: "positiveEffect")}
                                 }
