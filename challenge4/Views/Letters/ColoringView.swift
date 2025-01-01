@@ -17,6 +17,8 @@ struct ColoringView: View {
     @ObservedObject var child: Child
     @State private var isActivityCompleted = false
     @Binding var completedLetters: [Bool]
+    @Binding var completedWords: [Bool]
+    var isLocked : Bool
     
     
     var body: some View {
@@ -29,7 +31,7 @@ struct ColoringView: View {
             VStack {
                 // Home Button
                 HStack{
-                    NavigationLink(destination: HomeViewLetters(child: child, completedLetters: $completedLetters)) {
+                    NavigationLink(destination: New_Home_Page(child: child, completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)) {
                         Image(systemName: "house.fill")
                             .font(.system(size: 50))
                             .foregroundColor(.white)
@@ -60,7 +62,7 @@ struct ColoringView: View {
                 
                 HStack {
                     // right nav
-                    NavigationLink(destination: TutorialView(completedLetters: $completedLetters, child: child)) {
+                    NavigationLink(destination: TutorialView(completedLetters: $completedLetters, child: child, completedWords:$completedWords, isActivityCompleted:$isActivityCompleted, isLocked:isLocked)) {
                         Image(systemName: "arrowshape.right.fill")
                             .font(.system(size: 50))
                             .foregroundColor(.white)
@@ -108,7 +110,7 @@ struct ColoringView: View {
                     // left nav
                     Spacer()
                     
-                    NavigationLink(destination: PuzzleView(completedLetters: $completedLetters, child: child)) {
+                    NavigationLink(destination: PuzzleView(completedLetters: $completedLetters, child: child, completedWords:$completedWords, isLocked: isLocked)) {
                         Image(systemName: "arrowshape.left.fill")
                             .font(.system(size: 50))
                             .foregroundColor(.white) // Foreground color (#464646)

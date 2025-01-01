@@ -9,12 +9,15 @@ import SwiftUI
 import AVKit
 
 
+
 struct TutorialView: View {
     @State private var isPuzzleViewPresented = false
     @State private var playCount = 0
     @Binding  var completedLetters: [Bool]
     @ObservedObject var child: Child
-    @State private var isActivityCompleted = false
+    @Binding  var completedWords: [Bool]
+    @Binding  var isActivityCompleted : Bool
+    var isLocked:Bool
 
     private var player: AVPlayer? {
         let letterData = letters[child.currentLetterIndex]
@@ -37,7 +40,8 @@ struct TutorialView: View {
             VStack {
                 // Home Button
                 HStack{
-                    NavigationLink(destination: HomeViewLetters(child: child, completedLetters: $completedLetters)) {
+                    NavigationLink(destination: New_Home_Page(child: child, completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)) {
+                        
                         Image(systemName: "house.fill")
                             .font(.system(size: 50))
                             .foregroundColor(.white)
@@ -80,7 +84,7 @@ struct TutorialView: View {
                 // Nav Buttons
                 HStack {
                     Spacer()
-                    NavigationLink(destination: ColoringView(child: child, completedLetters: $completedLetters)) {
+                    NavigationLink(destination: ColoringView(child: child, completedLetters: $completedLetters, completedWords:$completedWords, isLocked: isLocked)) {
                         Image(systemName: "arrowshape.left.fill")
                             .font(.system(size: 50))
                             .foregroundColor(.white)

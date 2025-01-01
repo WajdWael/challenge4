@@ -11,6 +11,9 @@ struct Letters_Levels: View {
     
     @ObservedObject var child: Child
     @Binding  var completedLetters: [Bool]
+    @Binding  var completedWords: [Bool]
+    @State var isActivityCompleted: Bool = true
+    var isLocked: Bool
     
     //
     //    var letters: [Letter] = [
@@ -86,7 +89,7 @@ struct Letters_Levels: View {
                                     
                                         
                                         
-                                        NavigationLink(destination:TutorialView(completedLetters: $completedLetters, child: child)){
+                                NavigationLink(destination:TutorialView(completedLetters: $completedLetters, child: child, completedWords:$completedWords, isActivityCompleted:$isActivityCompleted, isLocked:isLocked)){
                                             
                                             ZStack{
                                                 
@@ -107,7 +110,7 @@ struct Letters_Levels: View {
                                 
                                 
                                 if completedLetters[0] == true {
-                                    NavigationLink(destination:TutorialView(completedLetters: $completedLetters, child: child)){
+                                    NavigationLink(destination:TutorialView(completedLetters: $completedLetters, child: child, completedWords:$completedWords, isActivityCompleted:$isActivityCompleted, isLocked:isLocked)){
                                         
                                         ZStack{
                                             
@@ -148,7 +151,7 @@ struct Letters_Levels: View {
                                 
                                 
                                 if completedLetters[1] == true{
-                                    NavigationLink(destination:TutorialView(completedLetters: $completedLetters, child: child)){
+                                    NavigationLink(destination:TutorialView(completedLetters: $completedLetters, child: child, completedWords:$completedWords, isActivityCompleted:$isActivityCompleted, isLocked:isLocked)){
                                         
                                         ZStack{
                                             

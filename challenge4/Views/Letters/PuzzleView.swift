@@ -13,6 +13,8 @@ struct PuzzleView: View {
     @State private var navigateToHome = false
     @Binding var completedLetters: [Bool]
     @ObservedObject var child: Child
+    @Binding var completedWords: [Bool]
+    var isLocked : Bool
     @State private var showPopup = false // State to toggle the pop-up
 
     let pieceWidth: CGFloat = 951 / 3
@@ -20,19 +22,25 @@ struct PuzzleView: View {
     @State private var navigateToNextLetter = false
 
     var body: some View {
+        
         let letter = letters[child.currentLetterIndex]
         let imageName = letter.puzzleImage
         
         
-        ScrollView {
-                
-                ZStack {
-                    Color("PrimaryColor").ignoresSafeArea()
+        ZStack {
 
+        NavigationStack{
+
+       
+                
+          
+               
+                    Color("PrimaryColor").ignoresSafeArea()
+                    
                     VStack {
                         // Navigation and Home Button
                         HStack {
-                            NavigationLink(destination: HomeViewLetters(child: child, completedLetters: $completedLetters)) {
+                            NavigationLink(destination: New_Home_Page(child: child, completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)) {
                                 Image(systemName: "house.fill")
                                     .font(.system(size: 50))
                                     .foregroundColor(.white)
@@ -47,7 +55,7 @@ struct PuzzleView: View {
                             Spacer()
                         }.padding()
                         
-
+                        
                         // Puzzle Area
                         ZStack {
                             // Reference Image
@@ -56,7 +64,7 @@ struct PuzzleView: View {
                                 .scaledToFit()
                                 .frame(width: 951, height: 543)
                                 .opacity(0.2)
-
+                            
                             // Draggable Puzzle Pieces in the Puzzle Area
                             ForEach(pieces.filter { $0.isLocked }) { piece in
                                 Image(uiImage: piece.image)
@@ -66,148 +74,146 @@ struct PuzzleView: View {
                             }
                         }
                         .frame(width: 951, height: 543)
-
-    //                    if isPuzzleComplete {
-                            HStack {
-                                // right nav
-                                NavigationLink(destination: ColoringView(child: child, completedLetters: $completedLetters)) {
-                                    Image(systemName: "arrowshape.right.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .frame(width: 81, height: 81) // Expand to fill horizontal space
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 100)
-                                                .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
-                                                .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
-                                        )
-                                }
-                                Spacer()
+                        
+                        //                    if isPuzzleComplete {
+                        HStack {
+                            // right nav
+                            NavigationLink(destination: ColoringView(child: child, completedLetters: $completedLetters, completedWords: $completedWords, isLocked: isLocked)) {
                                 
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack(spacing: 10) {
-                                        ForEach(pieces.filter { !$0.isLocked }) { piece in
-                                            Image(uiImage: piece.image)
-                                                .resizable()
-                                                .frame(width: pieceWidth, height: pieceHeight)
-                                                .contentShape(Rectangle()) // Ensure entire frame is tappable
-                                                .gesture(
-                                                    DragGesture(minimumDistance: 0) // Start gesture immediately
-                                                        .onChanged { value in
-                                                            let index = pieces.firstIndex(where: { $0.id == piece.id })!
-                                                            pieces[index].currentPosition = CGPoint(
-                                                                x: piece.correctPosition.x + value.translation.width,
-                                                                y: piece.correctPosition.y + value.translation.height
-                                                            )
-                                                        }
-                                                        .onEnded { value in
-                                                            let index = pieces.firstIndex(where: { $0.id == piece.id })!
-                                                            checkPlacement(for: &pieces[index])
-                                                            checkIfPuzzleComplete()
-                                                        }
-                                                )
-                                        }
+                                Image(systemName: "arrowshape.right.fill")
+                                    .font(.system(size: 50))
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(width: 81, height: 81) // Expand to fill horizontal space
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 100)
+                                            .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                            .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                                    )
+                            }
+                            Spacer()
+                            
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 10) {
+                                    ForEach(pieces.filter { !$0.isLocked }) { piece in
+                                        Image(uiImage: piece.image)
+                                            .resizable()
+                                            .frame(width: pieceWidth, height: pieceHeight)
+                                            .contentShape(Rectangle()) // Ensure entire frame is tappable
+                                            .gesture(
+                                                DragGesture(minimumDistance: 0) // Start gesture immediately
+                                                    .onChanged { value in
+                                                        let index = pieces.firstIndex(where: { $0.id == piece.id })!
+                                                        pieces[index].currentPosition = CGPoint(
+                                                            x: piece.correctPosition.x + value.translation.width,
+                                                            y: piece.correctPosition.y + value.translation.height
+                                                        )
+                                                    }
+                                                    .onEnded { value in
+                                                        let index = pieces.firstIndex(where: { $0.id == piece.id })!
+                                                        checkPlacement(for: &pieces[index])
+                                                        checkIfPuzzleComplete()
+                                                    }
+                                            )
                                     }
-                                    .padding(.horizontal)
                                 }
-                                .frame(height: pieceHeight)
-                                
-                                Spacer()
-                                
-                                // left nav
-                                
-                                Button(action: {
-                                    showPopup = true // Show the pop-up
-                                }) {
-                                    Image(systemName: "arrowshape.left.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.white) // Foreground color (#464646)
-                                        .padding()
-                                        .frame(width: 81, height: 81) // Expand to fill horizontal space
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 100)
-                                                .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
-                                                .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
-                                        )
-                                }
-                                .padding(.top, 20)
+                                .padding(.horizontal)
                             }
-                            .padding()                 
-                        
+                            .frame(height: pieceHeight)
                             
-                        
-
-                    }
-                }
-                .onAppear {
-                    setupPuzzle(for: letter)
-                }
-//                .alert(isPresented: $isPuzzleComplete) {
-//                    Alert(
-//                        title: Text("Congratulations!"),
-//                        message: Text("You completed the puzzle!"),
-//                        dismissButton: .default(Text("Back to Home")) {
-//                            markLetterAsCompleted()
-//                            navigateToNextLetter = true
-//                        }
-//                    )
-//                }
-                
-            }
-        .padding()
-        .navigationBarBackButtonHidden(true)
-        .background(Color("PrimaryColor"))
-        .ignoresSafeArea()
-        .overlay(
-            Group {
-                if showPopup {
-                    ZStack {
-                        // Background overlay
-                        Color.black.opacity(0.4)
-                            .edgesIgnoringSafeArea(.all)
-
-                        // Pop-up rectangle
-                        VStack(spacing: 10) {
-                            Text("مبروك 🎉")
-                                .globalFont(size: 60)
-                                .bold()
-                                .foregroundStyle(Color(.black))
+                            Spacer()
                             
-                            Text("لقد تم انهاء الحرف")
-                                .globalFont(size: 40)
+                            // left nav
                             
-                            Image("SingleCharacter")
-                                .resizable()
-                                .scaledToFit()
-                                .scaleEffect(0.75)
-
-                            NavigationLink(
-                                destination: Letters_Levels(child: child, completedLetters: $completedLetters),
-                                isActive: $navigateToHome
-                            ) {
-                                Button(action: {
-                                    markLetterAsCompleted()
-                                    navigateToHome = true
-                                }) {
-                                    Text("انهاء")
-                                        .globalFont(size: 30)
-                                        .fontWeight(.bold)
-                                        .padding()
-                                        .background(Color.orange)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(10)
-                                }
+                            Button(action: {
+                                showPopup = true // Show the pop-up
+                            }) {
+                                Image(systemName: "arrowshape.left.fill")
+                                    .font(.system(size: 50))
+                                    .foregroundColor(.white) // Foreground color (#464646)
+                                    .padding()
+                                    .frame(width: 81, height: 81) // Expand to fill horizontal space
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 100)
+                                            .fill(Color(red: 255 / 255, green: 195 / 255, blue: 63 / 255)) // Background color (#FFC33F)
+                                            .shadow(color: Color(red: 255 / 255, green: 173 / 255, blue: 0 / 255), radius: 0, x: 5, y: 8)
+                                    )
                             }
+                            .padding(.top, 20)
                         }
                         .padding()
-                        .frame(width: 644, height: 594)
-                        .background(Color("PrimaryColor"))
-                        .cornerRadius(15)
-                        .shadow(radius: 10)
+                        
+                        
+                        
+                        
                     }
+                    
+                
+                }.onAppear{
+                    setupPuzzle(for: letter)
                 }
+                .padding()
+                .navigationBarBackButtonHidden(true)
+                .background(Color("PrimaryColor"))
+                .ignoresSafeArea()
+                
+                    
+                        if showPopup {
+                            ZStack {
+                                // Background overlay
+                                Color.black.opacity(0.4)
+                                    .edgesIgnoringSafeArea(.all)
+
+                                // Pop-up rectangle
+                                VStack(spacing: 10) {
+                                    Text("مبروك 🎉")
+                                        .globalFont(size: 60)
+                                        .bold()
+                                        .foregroundStyle(Color(.black))
+                                    
+                                    Text("لقد تم انهاء الحرف")
+                                        .globalFont(size: 40)
+                                    
+                                    Image("SingleCharacter")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .scaleEffect(0.75)
+
+                                    NavigationLink(
+                                        destination: Letters_Levels(child:child, completedLetters:$completedLetters, completedWords:$completedWords, isLocked:isLocked),
+                                        isActive: $navigateToHome
+                                    ) {
+                                        Button(action: {
+                                            markLetterAsCompleted()
+                                            navigateToHome = true
+                                        }) {
+                                            Text("انهاء")
+                                                .globalFont(size: 30)
+                                                .fontWeight(.bold)
+                                                .padding()
+                                                .background(Color.orange)
+                                                .foregroundColor(.white)
+                                                .cornerRadius(10)
+                                        }
+                                    }
+                                }
+                                .padding()
+                                .frame(width: 644, height: 594)
+                                .background(Color("PrimaryColor"))
+                                .cornerRadius(15)
+                                .shadow(radius: 10)
+                            }
+                        }
+                
+                
+            
+                
+//
+                
             }
-        )
+       
+            
+        
 
     }
 
@@ -276,8 +282,9 @@ struct PuzzleView: View {
             child.currentLetterIndex += 1
             
         } else {
-            print("All letters completed!")
+            child.currentLetterIndex = 0
         }
        
     }
 }
+

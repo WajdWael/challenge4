@@ -19,10 +19,12 @@ struct New_Home_Page: View {
     @Binding var completedWords: [Bool]
     @Binding var completedLetters: [Bool]
     @State private var isActivityCompleted = false
-    
-    
     var isLocked: Bool
-
+    
+    
+    
+    
+    
     var body: some View {
         
         NavigationStack {
@@ -34,22 +36,22 @@ struct New_Home_Page: View {
                     
                     //For reset the database and displaying it
                     
-//                    Button {
-//                        resetDatabase()
-//                    } label: {
-//
-//                        Text("Clear database")
-//                            .font(.largeTitle)
-//                            .foregroundStyle(Color.white)
-//                            .frame(width: 70, height: 70)
-//                            .background(Color.blue)
-//                    }
-//
-//
-//                    NavigationLink(destination: SwiftUIView()){
-//
-//                        Text("GO TO THE VIEW")
-//                    }
+                    //                    Button {
+                    //                        resetDatabase()
+                    //                    } label: {
+                    //
+                    //                        Text("Clear database")
+                    //                            .font(.largeTitle)
+                    //                            .foregroundStyle(Color.white)
+                    //                            .frame(width: 70, height: 70)
+                    //                            .background(Color.blue)
+                    //                    }
+                    //
+                    //
+                    //                    NavigationLink(destination: SwiftUIView()){
+                    //
+                    //                        Text("GO TO THE VIEW")
+                    //                    }
                     
                     
                     Color("PrimaryColor").edgesIgnoringSafeArea(.all)
@@ -59,7 +61,7 @@ struct New_Home_Page: View {
                         
                         HStack {
                             
-                            NavigationLink(destination: Letters_Levels(child:child, completedLetters:$completedLetters)) {
+                            NavigationLink(destination: Letters_Levels(child:child, completedLetters:$completedLetters, completedWords:$completedWords, isLocked:isLocked)) {
                                 Image("Brown_home")
                                     .resizable()
                                     .frame(width: 500, height: 500)
@@ -68,40 +70,69 @@ struct New_Home_Page: View {
                             }
                             
                             
-                            if isLocked {
+                            if completedLetters.allSatisfy{$0} {
                                 
-                                ZStack {
-                                    Image("Bage_home")
-                                        .resizable()
-                                        .frame(width: 500, height: 500)
-                                        .opacity(0.3)
-                                    
-                                    Image(systemName: "lock.fill")
-                                        .foregroundColor(.red)
-                                        .frame(width: 500, height: 500)
-                                }
-                                
-                                
-                            } else {
                                 NavigationLink(destination: Words_Levels(child:child, completedWords:$completedWords, completedLetters:$completedLetters, isActivityCompleted:$isActivityCompleted)) {
                                     Image("Bage_home")
                                         .resizable()
                                         .frame(width: 500, height: 500)
                                         .containerRelativeFrame(.horizontal, count: 2, spacing: 100)
-                                       // .scaleEffect(isAnimatingFirstHome ? 1.1 : 1.0)
+                                    // .scaleEffect(isAnimatingFirstHome ? 1.1 : 1.0)
                                 }
                             }
+                                
+                                
+                                //                            }else{
+                                //
+                                //                                ZStack {
+                                //                                    Image("Bage_home")
+                                //                                        .resizable()
+                                //                                        .frame(width: 500, height: 500)
+                                //                                        .opacity(0.3)
+                                //
+                                //                                    Image(systemName: "lock.fill")
+                                //                                        .foregroundColor(.red)
+                                //                                        .frame(width: 500, height: 500)
+                                //                                }
+                                //
+                                //
+                                //                            }
+                                
+                                
+                                if isLocked {
+                                    
+                                    ZStack {
+                                        Image("Bage_home")
+                                            .resizable()
+                                            .frame(width: 500, height: 500)
+                                            .opacity(0.3)
+                                        
+                                        Image(systemName: "lock.fill")
+                                            .foregroundColor(.red)
+                                            .frame(width: 500, height: 500)
+                                    }
+                                    
+                                    
+                                } else {
+                                    NavigationLink(destination: Words_Levels(child:child, completedWords:$completedWords, completedLetters:$completedLetters, isActivityCompleted:$isActivityCompleted)) {
+                                        Image("Bage_home")
+                                            .resizable()
+                                            .frame(width: 500, height: 500)
+                                            .containerRelativeFrame(.horizontal, count: 2, spacing: 100)
+                                        // .scaleEffect(isAnimatingFirstHome ? 1.1 : 1.0)
+                                    }
+                                }
+                            
                         }
+                        .navigationBarBackButtonHidden(true)
                     }
-                    .navigationBarBackButtonHidden(true)
                 }
             }
         }
+        
     }
-    
-    
-    //function clears the database
-    private func resetDatabase() {
+        //function clears the database
+        private func resetDatabase() {
             do {
                 let request = FetchDescriptor<Child>()
                 let children = try context.fetch(request)
@@ -114,4 +145,5 @@ struct New_Home_Page: View {
                 print("خطأ أثناء تنظيف قاعدة البيانات: \(error.localizedDescription)")
             }
         }
-}
+    }
+

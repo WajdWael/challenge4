@@ -34,7 +34,7 @@ struct New_Age_View: View {
                     
                     ForEach(ages, id: \.self) { age in
                         
-                        let destinationLetters = New_Home_Page(child: Child(age: age, currentWordIndex: 0, currentLevelPrograss : 0, currentLetterIndex: 0), completedWords:$completedWords, completedLetters: $completedLetters, isLocked: isLocked)
+                        let destinationLetters = New_Home_Page(child: Child(age: age, currentWordIndex: 0, currentLevelPrograss : 0, currentLetterIndex: 0), completedWords:$completedWords, completedLetters: $completedLetters, isLocked: !isLocked)
                         
                         let destinationWords = New_Home_Page(child: Child(age: age, currentWordIndex: 0, currentLevelPrograss : 0, currentLetterIndex: 0), completedWords: $completedWords, completedLetters: $completedLetters, isLocked: isLocked)
                         
