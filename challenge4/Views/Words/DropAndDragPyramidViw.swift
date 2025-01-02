@@ -4,7 +4,6 @@
 //
 //  Created by Wajd Wael on 24/06/1446 AH.
 //
-
 import SwiftUI
 import AVFoundation
 
@@ -32,6 +31,7 @@ struct DragAndDropPyramidView: View {
     
     
     var body: some View {
+        
         ZStack {
             Color("PrimaryColor").edgesIgnoringSafeArea(.all)
 
@@ -188,19 +188,32 @@ struct DragAndDropPyramidView: View {
         }
     }
 }
+
 struct DraggablePart: View {
     let part: String
+    @State private var isDragging = false
+    
     var body: some View {
-        ZStack{
+        ZStack {
             Text(part)
                 .globalFont(size: 60)
-                .frame(width: 100, height: 80)
+                .frame(width: 150, height: 80)
                 .padding()
-                .background(Color("StickyNoteColor"))
+                .background(isDragging ? Color.gray : Color("StickyNoteColor"))
                 .cornerRadius(10)
                 .onDrag {
-                    NSItemProvider(object: part as NSString)
+                    isDragging = false // Reset state when dragging starts
+                    return NSItemProvider(object: part as NSString)
                 }
+                .gesture(
+                    DragGesture()
+                        .onChanged { _ in
+                            isDragging = true // Highlight while dragging
+                        }
+                        .onEnded { _ in
+                            isDragging = false // Reset highlight
+                        }
+                )
         }
     }
 }
